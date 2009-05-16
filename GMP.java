@@ -484,8 +484,10 @@ public final class GMP
     public static void main(String[] args) 
     {
 	GMP g = new GMP();
+	System.out.println("Initializing a GMP number with value 9...");
 	g.fromLong((long)9);
-	System.out.println(g.toString());
+	System.out.println("done");
+	System.out.println("Value: "+g.toString());
     }
 
 
