@@ -31,6 +31,38 @@ JNIEXPORT void JNICALL Java_GMP_natInitialize
 JNIEXPORT void JNICALL Java_GMP_natFinalize
   (JNIEnv *, jobject);
 
+/*
+ * Class:     GMP
+ * Method:    natFromLong
+ * Signature: (J)V
+ */
+JNIEXPORT void JNICALL Java_GMP_natFromLong
+  (JNIEnv *, jobject, jlong);
+
+/*
+ * Class:     GMP
+ * Method:    natFromString
+ * Signature: (Ljava/lang/String;I)I
+ */
+JNIEXPORT jint JNICALL Java_GMP_natFromString
+  (JNIEnv *, jobject, jstring, jint);
+
+/*
+ * Class:     GMP
+ * Method:    natToString
+ * Signature: (I)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_GMP_natToString
+  (JNIEnv *, jobject, jint);
+
+/*
+ * Class:     GMP
+ * Method:    natDoubleValue
+ * Signature: ()D
+ */
+JNIEXPORT jdouble JNICALL Java_GMP_natDoubleValue
+  (JNIEnv *, jobject);
+
 #ifdef __cplusplus
 }
 #endif

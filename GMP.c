@@ -268,46 +268,40 @@ Java_GMP_natFromLong(JNIEnv *env, jobject this,
 /* #endif /\* defined(WITH_GNU_MP) *\/ */
 /* } */
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. On exit, this will have the value */
-/*  *           represented by the s Java string. */
-/*  * @param s  a Java string containing, a possibly signed, value to assign to */
-/*  *           this. */
-/*  * @param rdx  the base in which the symbols, in s, are represented. */
-/*  * @return  0 if the entire string is a valid number in base rdx. Otherwise it */
-/*  *          returns -1. */
-/*  * */
-/*  * Implementation note: */
-/*  * While the GMP library is more tolerant in what it accepts as parameter values */
-/*  * for conversions from strings, the BigInteger code, which calls this method, */
-/*  * ensures that the contract described in the RI's documentation is respected; */
-/*  * e.g. no white spaces in the middle, limited valid radix values, etc... */
-/*  *\/ */
-/* JNIEXPORT jint JNICALL */
-/* Java_gnu_java_math_GMP_natFromString(JNIEnv *env, */
-/*                                                        jobject this, jstring s, */
-/*                                                        jint rdx) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_ptr _this; */
-/*   const char *_s; */
-/*   int result; */
+/*
+ * @param this  an instance of NativeMPI. On exit, this will have the value
+ *           represented by the s Java string.
+ * @param s  a Java string containing, a possibly signed, value to assign to
+ *           this.
+ * @param rdx  the base in which the symbols, in s, are represented.
+ * @return  0 if the entire string is a valid number in base rdx. Otherwise it
+ *          returns -1.
+ *
+ * Implementation note:
+ * While the GMP library is more tolerant in what it accepts as parameter values
+ * for conversions from strings, the BigInteger code, which calls this method,
+ * ensures that the contract described in the RI's documentation is respected;
+ * e.g. no white spaces in the middle, limited valid radix values, etc...
+ */
+JNIEXPORT jint JNICALL
+Java_GMP_natFromString(JNIEnv *env,
+                                                       jobject this, jstring s,
+                                                       jint rdx)
+{
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_ptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _s = (*env)->GetStringUTFChars (env, s, NULL); */
-/*   result = mpz_set_str (_this, _s, (int)rdx); */
-/*   JCL_free_cstring (env, s, _s); */
-/*   TRACE("end"); */
-/*   return (result); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) s; */
-/*   (void) rdx; */
-/*   //throw_config_exception(env); */
-/*   return (-1); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+  mpz_ptr _this;
+  const char *_s;
+  int result;
+
+  TRACE("begin");
+  _this = (mpz_ptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _s = (*env)->GetStringUTFChars (env, s, NULL);
+  result = mpz_set_str (_this, _s, (int)rdx);
+  JCL_free_cstring (env, s, _s);
+  TRACE("end");
+  return (result);
+
+}
 
 /* /\* */
 /*  * @param this  an instance of NativeMPI. On exit, this will have the value */
@@ -458,27 +452,23 @@ Java_GMP_natToString(JNIEnv *env, jobject this,
 
 /* } */
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @return  the, eventually truncated, double value of this NativeMPI. */
-/*  *\/ */
-/* JNIEXPORT jdouble JNICALL */
-/* Java_gnu_java_math_GMP_natDoubleValue(JNIEnv *env, */
-/*                                                         jobject this) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this; */
+/*
+ * @param this  an instance of NativeMPI.
+ * @return  the, eventually truncated, double value of this NativeMPI.
+ */
+JNIEXPORT jdouble JNICALL
+Java_GMP_natDoubleValue(JNIEnv *env,
+                                                        jobject this)
+{
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   TRACE("end"); */
-/*   return ((jdouble)mpz_get_d (_this)); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   //throw_config_exception(env); */
-/*   return (0.0); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+  mpz_srcptr _this;
+
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  TRACE("end");
+  return ((jdouble)mpz_get_d (_this));
+
+}
 
 /* /\* */
 /*  * @param this  a NativeMPI instance. */

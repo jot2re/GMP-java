@@ -89,7 +89,7 @@ public final class GMP
   //   x.releaseRef();
   //   releaseRef();
   // }
-  
+   
   public void fromLong(long n)
   {
     acquireRef();
@@ -97,13 +97,13 @@ public final class GMP
     releaseRef();
   }
   
-  // public int fromString(String s, int rdx)
-  // {
-  //   acquireRef();
-  //   int result = natFromString(s, rdx);
-  //   releaseRef();
-  //   return result;
-  // }
+  public int fromString(String s, int rdx)
+  {
+    acquireRef();
+    int result = natFromString(s, rdx);
+    releaseRef();
+    return result;
+  }
   
   // public void fromSignedMagnitude(byte[] m, boolean isNegative)
   // {
@@ -132,13 +132,13 @@ public final class GMP
   //   releaseRef();
   // }
   
-  // public double doubleValue()
-  // {
-  //   acquireRef();
-  //   double result = natDoubleValue();
-  //   releaseRef();
-  //   return result;
-  // }
+  public double doubleValue()
+  {
+    acquireRef();
+    double result = natDoubleValue();
+    releaseRef();
+    return result;
+  }
   
   // public int absIntValue()
   // {
@@ -439,13 +439,13 @@ public final class GMP
    private native void natFromLong(long n);
   // private native void natFromBI(Pointer x);
   // private native void natFromByteArray(byte[] v);
-  // private native int natFromString(String s, int rdx);
+   private native int natFromString(String s, int rdx);
   // private native void natFromSignedMagnitude(byte[] m, boolean isNegative);
   
    private native String natToString(int base);
   // private native void natToByteArray(byte[] r);
   // private native int natAbsIntValue();
-  // private native double natDoubleValue();
+   private native double natDoubleValue();
   
   // private native int natCompare(Pointer y);
   // private native void natAdd(Pointer x, Pointer r);
@@ -488,6 +488,7 @@ public final class GMP
 	g.fromLong((long)9);
 	System.out.println("done");
 	System.out.println("Value: "+g.toString());
+	System.out.println("Value: "+g.doubleValue());
     }
 
 
