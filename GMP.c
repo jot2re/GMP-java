@@ -75,8 +75,11 @@ exception statement from your version. */
  */
 
 static jfieldID native_ptr;
-
+#if DEBUG
 #define TRACE(msg) fprintf (stderr, "%s(%s:%d) -- %s\n", __FUNCTION__, __FILE__, __LINE__, msg)
+#else
+#define TRACE(msg)
+#endif
 
 //#define throw_config_exception(env) JCL_ThrowException (env, "java/lang/Error", "GNU MP was not specified/found by configure")
 
