@@ -104,7 +104,6 @@ Java_GMP_natInitializeLibrary(JNIEnv *env,
   native_ptr = (*env)->GetFieldID (env, nativeMPI, "native_ptr",
                                    "LPointer;");
   TRACE("Loaded GMP-based BigInteger native library");
-  jint i=0; return;
 }
 
 /*
@@ -118,22 +117,21 @@ Java_GMP_natInitialize(JNIEnv *env, jobject this)
   mpz_ptr _this; 
 
   TRACE("begin");
-  _this = (mpz_ptr) malloc(sizeof (mpz_t)); //(mpz_ptr)JCL_malloc (env, sizeof (mpz_t));
-  /* initialize --GMP sets the value to zero. */
+  _this = (mpz_ptr) malloc(sizeof (mpz_t)); (mpz_ptr)JCL_malloc (env, sizeof (mpz_t));
+  //initialize --GMP sets the value to zero.
   mpz_init (_this);
-  /* instantiate the Pointer instance for this NativeMPI. */
+  //instantiate the Pointer instance for this NativeMPI.
   jobject native_ptr_fld = JCL_NewRawDataObject (env, _this);
-  /* ... and assign it to the native_ptr field. */
+  //... and assign it to the native_ptr field.
   (*env)->SetObjectField (env, this, native_ptr, native_ptr_fld);
   TRACE("end");
   
 }
 
-/*
- * Clear and free the data structure for an instance of a NativeMPI.
- *
- * @param this  an instance of NativeMPI.
- */
+/*Clear and free the data structure for an instance of a NativeMPI.
+
+ *@param this  an instance of NativeMPI.
+*/
 JNIEXPORT void JNICALL
 Java_GMP_natFinalize(JNIEnv *env, jobject this)
 {
@@ -156,10 +154,9 @@ Java_GMP_natFinalize(JNIEnv *env, jobject this)
 
 }
 
-
 /*
- * @param this  an instance of NativeMPI. On exit, this will have a value of n.
- * @param n  a Java long primitive value.
+ *@param this  an instance of NativeMPI. On exit, this will have a value of n.
+ *@param n  a Java long primitive value.
  */
 JNIEXPORT void JNICALL
 Java_GMP_natFromLong(JNIEnv *env, jobject this,
@@ -170,15 +167,15 @@ Java_GMP_natFromLong(JNIEnv *env, jobject this,
 
   TRACE("begin");
   _this = (mpz_ptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
-  /* the size of jlong (64-bit) is either the same as a long, or that of a long long.
-   * if it's the former, we use as is. */
+  //the size of jlong (64-bit) is either the same as a long, or that of a long long.
+  //if it's the former, we use as is.
   if (sizeof (jlong) == sizeof (long))
     {
       mpz_set_si (_this, (signed long)n);
     }
   else
     {
-      /* ...otherwise, we operate on the two halves of the long long, each half
+      /*...otherwise, we operate on the two halves of the long long, each half
        * being 32-bit wide.  for simplicity, we work with positive
        * values negating, if necessary, the final outcome.
        */
@@ -188,7 +185,7 @@ Java_GMP_natFromLong(JNIEnv *env, jobject this,
           n = -n;
         }
       mpz_set_ui (_this, (unsigned long)(((unsigned long long)n) >> 32));
-      mpz_mul_2exp (_this, _this, 32); /* shift left by 32 bits */
+      mpz_mul_2exp (_this, _this, 32); //shift left by 32 bits
       mpz_add_ui (_this, _this, (unsigned long)n);
       if (isnegative)
         {
@@ -199,93 +196,85 @@ Java_GMP_natFromLong(JNIEnv *env, jobject this,
 
 }
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. On exit, this will have the same */
-/*  *           value as x. */
-/*  * @param x  an instance of a NativeMPI's Pointer. */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natFromBI(JNIEnv *env, jobject this, */
-/*                                                    jobject x) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_ptr _this; */
-/*   mpz_srcptr _x; */
+/* 
+ * @param this  an instance of NativeMPI. On exit, this will have the same
+ *         value as x.
+ *@param x  an instance of a NativeMPI's Pointer.
+ */
+JNIEXPORT void JNICALL
+Java_GMP_natFromBI(JNIEnv *env, jobject this,
+                                                   jobject x)
+{
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_ptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _x = (mpz_srcptr)JCL_GetRawData (env, x); */
-/*   mpz_set (_this, _x); */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) x; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+  mpz_ptr _this;
+  mpz_srcptr _x;
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. On exit, this will have the value */
-/*  *           represented by the v Java byte array (in 2's complement with most */
-/*  *           significant byte at index position 0). The sign is implied by the */
-/*  *           value of the most significant byte. */
-/*  * @param v  a Java byte array containing the byte representation, in 2's */
-/*  *           complement of the signed value to assign to this. */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natFromByteArray(JNIEnv *env, */
-/*                                                           jobject this, */
-/*                                                           jbyteArray v) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_ptr _this; */
-/*   jbyte *_v; */
-/*   unsigned long b; */
-/*   int vlength, isnegative, i; */
+  TRACE("begin");
+  _this = (mpz_ptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _x = (mpz_srcptr)JCL_GetRawData (env, x);
+  mpz_set (_this, _x);
+  TRACE("end");
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_ptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _v = (*env)->GetByteArrayElements (env, v, NULL); */
-/*   vlength = (*env)->GetArrayLength (env, v); */
-/*   b = (unsigned long)(_v[0] & 0xFF); */
-/*   isnegative = (b > 0x7F) ? 1 : 0; */
-/*   mpz_set_ui (_this, 0); */
-/*   for (i = 0; i < vlength; i++) */
-/*     { */
-/*       mpz_mul_2exp (_this, _this, 8); /\* shift left 8 positions. *\/ */
-/*       b = (unsigned long)(_v[i] & 0xFF); */
-/*       b = (isnegative) ? ~b : b; */
-/*       mpz_add_ui (_this, _this, (unsigned long)(b & 0xFF)); */
-/*     } */
-/*   (*env)->ReleaseByteArrayElements (env, v, _v, JNI_ABORT); */
-/*   if (isnegative) */
-/*     { */
-/*       mpz_add_ui (_this, _this, 1); */
-/*       mpz_neg (_this, _this); */
-/*     } */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) v; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+}
 
 /*
  * @param this  an instance of NativeMPI. On exit, this will have the value
- *           represented by the s Java string.
+ *           represented by the v Java byte array (in 2's complement with most
+ *           significant byte at index position 0). The sign is implied by the
+ *           value of the most significant byte.
+ * @param v  a Java byte array containing the byte representation, in 2's
+ *           complement of the signed value to assign to this.
+ */
+JNIEXPORT void JNICALL
+Java_GMP_natFromByteArray(JNIEnv *env,
+                                                          jobject this,
+                                                          jbyteArray v)
+{
+
+  mpz_ptr _this;
+  jbyte *_v;
+  unsigned long b;
+  int vlength, isnegative, i;
+
+  TRACE("begin");
+  _this = (mpz_ptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _v = (*env)->GetByteArrayElements (env, v, NULL);
+  vlength = (*env)->GetArrayLength (env, v);
+  b = (unsigned long)(_v[0] & 0xFF);
+  isnegative = (b > 0x7F) ? 1 : 0;
+  mpz_set_ui (_this, 0);
+  for (i = 0; i < vlength; i++)
+    {
+      mpz_mul_2exp (_this, _this, 8); /* shift left 8 positions. */
+      b = (unsigned long)(_v[i] & 0xFF);
+      b = (isnegative) ? ~b : b;
+      mpz_add_ui (_this, _this, (unsigned long)(b & 0xFF));
+    }
+  (*env)->ReleaseByteArrayElements (env, v, _v, JNI_ABORT);
+  if (isnegative)
+    {
+      mpz_add_ui (_this, _this, 1);
+      mpz_neg (_this, _this);
+    }
+  TRACE("end");
+
+}
+
+/*
+ * @param this  an instance of NativeMPI. On exit, this will have the value
+ *         represented by the s Java string.
  * @param s  a Java string containing, a possibly signed, value to assign to
- *           this.
+ *         this.
  * @param rdx  the base in which the symbols, in s, are represented.
  * @return  0 if the entire string is a valid number in base rdx. Otherwise it
- *          returns -1.
- *
- * Implementation note:
- * While the GMP library is more tolerant in what it accepts as parameter values
- * for conversions from strings, the BigInteger code, which calls this method,
- * ensures that the contract described in the RI's documentation is respected;
- * e.g. no white spaces in the middle, limited valid radix values, etc...
- */
+ *        returns -1.
+
+Implementation note:
+While the GMP library is more tolerant in what it accepts as parameter values
+for conversions from strings, the BigInteger code, which calls this method,
+ensures that the contract described in the RI's documentation is respected;
+e.g. no white spaces in the middle, limited valid radix values, etc...
+*/
 JNIEXPORT jint JNICALL
 Java_GMP_natFromString(JNIEnv *env,
                                                        jobject this, jstring s,
@@ -306,51 +295,45 @@ Java_GMP_natFromString(JNIEnv *env,
 
 }
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. On exit, this will have the value */
-/*  *           represented by the m Java byte array (most significant byte at */
-/*  *           index position 0). It will be positive, or negative, depending on */
-/*  *           the value of isnegative. */
-/*  * @param m  a Java byte array containing the byte representation of the */
-/*  *           absolute value (most significant byte being at index position 0) */
-/*  *           to assign to this. */
-/*  * @param isnegative  true if this should be negative and false if it should */
-/*  *           be positive. */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natFromSignedMagnitude(JNIEnv *env, */
-/*                                                                 jobject this, */
-/*                                                                 jbyteArray m, */
-/*                                                                 jboolean isnegative) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_ptr _this; */
-/*   jbyte *_m; */
-/*   int mlength, i; */
+/*
+ * @param this  an instance of NativeMPI. On exit, this will have the value
+ *           represented by the m Java byte array (most significant byte at
+ *           index position 0). It will be positive, or negative, depending on
+ *           the value of isnegative.
+ * @param m  a Java byte array containing the byte representation of the
+ *           absolute value (most significant byte being at index position 0)
+ *           to assign to this.
+ * @param isnegative  true if this should be negative and false if it should
+ *           be positive.
+ */
+JNIEXPORT void JNICALL
+Java_GMP_natFromSignedMagnitude(JNIEnv *env,
+                                                                jobject this,
+                                                                jbyteArray m,
+                                                                jboolean isnegative)
+{
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_ptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _m = (*env)->GetByteArrayElements (env, m, NULL); */
-/*   mlength = (*env)->GetArrayLength (env, m); */
-/*   mpz_set_ui (_this, 0); */
-/*   for (i = 0; i < mlength; i++) */
-/*     { */
-/*       mpz_mul_2exp (_this, _this, 8); */
-/*       mpz_add_ui (_this, _this, (unsigned long)(_m[i] & 0xFF)); */
-/*     } */
-/*   (*env)->ReleaseByteArrayElements (env, m, _m, JNI_ABORT); */
-/*   if (isnegative == JNI_TRUE) */
-/*     { */
-/*       mpz_neg (_this, _this); */
-/*     } */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) m; */
-/*   (void) isnegative; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+  mpz_ptr _this;
+  jbyte *_m;
+  int mlength, i;
+
+  TRACE("begin");
+  _this = (mpz_ptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _m = (*env)->GetByteArrayElements (env, m, NULL);
+  mlength = (*env)->GetArrayLength (env, m);
+  mpz_set_ui (_this, 0);
+  for (i = 0; i < mlength; i++)
+    {
+      mpz_mul_2exp (_this, _this, 8);
+      mpz_add_ui (_this, _this, (unsigned long)(_m[i] & 0xFF));
+    }
+  (*env)->ReleaseByteArrayElements (env, m, _m, JNI_ABORT);
+  if (isnegative == JNI_TRUE)
+    {
+      mpz_neg (_this, _this);
+    }
+  TRACE("end");
+}
 
 /*
  * @param this  an instance of NativeMPI.
@@ -376,89 +359,85 @@ Java_GMP_natToString(JNIEnv *env, jobject this,
 
 }
 
-/* /\* */
-/*  * @param this  a non-ZERO instance of NativeMPI. */
-/*  * */
-/*  * output: */
-/*  * @param r  a Java byte array which shall contain the byte representation of */
-/*  *           this. */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natToByteArray(JNIEnv *env, */
-/*                                                         jobject this, */
-/*                                                         jbyteArray r) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this; */
-/*   mpz_t _w;  /\* a temporary work mpi *\/ */
-/*   jbyte *_r; */
-/*   int rlength, sign, i; */
-/*   unsigned long b; */
+/*
+ * @param this  a non-ZERO instance of NativeMPI.
+ *
+ * output:
+ * @param r  a Java byte array which shall contain the byte representation of
+ *           this.
+ */
+JNIEXPORT void JNICALL
+Java_GMP_natToByteArray(JNIEnv *env,
+                                                        jobject this,
+                                                        jbyteArray r)
+{
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _r = (*env)->GetByteArrayElements (env, r, NULL); */
-/*   rlength = (*env)->GetArrayLength (env, r); */
-/*   mpz_init (_w); */
-/*   /\* if this is negative set w to its 2's complement otherwise use as is. *\/ */
-/*   sign = mpz_sgn (_this); */
-/*   if (sign == 1) */
-/*     { */
-/*       mpz_set (_w, _this); */
-/*     } */
-/*   else */
-/*     { */
-/*       mpz_neg (_w, _this); */
-/*       mpz_sub_ui (_w, _w, 1); */
-/*     } */
-/*   /\* _w SHOULD be >= 0. */
-/*    * start filling the array starting from the least significant byte. *\/ */
-/*   for (i = rlength; --i >= 0; ) */
-/*     { */
-/*       b = mpz_tdiv_q_ui (_w, _w, 256); */
-/*       b = (sign == -1) ? ~b : b; */
-/*       _r[i] = (unsigned long)(b & 0xFF); */
-/*     } */
-/*   (*env)->ReleaseByteArrayElements (env, r, _r, JNI_COMMIT); */
-/*   /\* if _w > 0 the byte array was short. *\/ */
-/*   if (mpz_cmp_ui (_w, 0) > 0) */
-/*     { */
-/*       TRACE("WARNING: byte array is too short"); */
-/*     } */
-/*   mpz_clear (_w); */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) r; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+  mpz_srcptr _this;
+  mpz_t _w;  /* a temporary work mpi */
+  jbyte *_r;
+  int rlength, sign, i;
+  unsigned long b;
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @return  the "int" value (least significant 32 bits) of the absolute value */
-/*  *          of this NativeMPI. The calling code MUST handle the sign. We do */
-/*  *          this so we can use the same method when computing the "long" value */
-/*  *          as well. */
-/*  *\/ */
-/* JNIEXPORT jint JNICALL */
-/* Java_gnu_java_math_GMP_natAbsIntValue(JNIEnv *env, */
-/*                                                         jobject this) */
-/* { */
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _r = (*env)->GetByteArrayElements (env, r, NULL);
+  rlength = (*env)->GetArrayLength (env, r);
+  mpz_init (_w);
+  /* if this is negative set w to its 2's complement otherwise use as is. */
+  sign = mpz_sgn (_this);
+  if (sign == 1)
+    {
+      mpz_set (_w, _this);
+    }
+  else
+    {
+      mpz_neg (_w, _this);
+      mpz_sub_ui (_w, _w, 1);
+    }
+  /* _w SHOULD be >= 0.
+   * start filling the array starting from the least significant byte. */
+  for (i = rlength; --i >= 0; )
+    {
+      b = mpz_tdiv_q_ui (_w, _w, 256);
+      b = (sign == -1) ? ~b : b;
+      _r[i] = (unsigned long)(b & 0xFF);
+    }
+  (*env)->ReleaseByteArrayElements (env, r, _r, JNI_COMMIT);
+  /* if _w > 0 the byte array was short. */
+  if (mpz_cmp_ui (_w, 0) > 0)
+    {
+      TRACE("WARNING: byte array is too short");
+    }
+  mpz_clear (_w);
+  TRACE("end");
 
-/*   mpz_srcptr _this; */
-
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   TRACE("end"); */
-/*   return ((jint)mpz_get_ui (_this)); */
-
-/* } */
+}
 
 /*
  * @param this  an instance of NativeMPI.
- * @return  the, eventually truncated, double value of this NativeMPI.
+ * @return  the "int" value (least significant 32 bits) of the absolute value
+ *          of this NativeMPI. The calling code MUST handle the sign. We do
+ *          this so we can use the same method when computing the "long" value
+ *          as well.
  */
+JNIEXPORT jint JNICALL
+Java_GMP_natAbsIntValue(JNIEnv *env,
+                                                        jobject this)
+{
+
+  mpz_srcptr _this;
+
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  TRACE("end");
+  return ((jint)mpz_get_ui (_this));
+
+}
+
+/*
+ @param this  an instance of NativeMPI.
+ @return  the, eventually truncated, double value of this NativeMPI.
+*/
 JNIEXPORT jdouble JNICALL
 Java_GMP_natDoubleValue(JNIEnv *env,
                                                         jobject this)
@@ -473,871 +452,722 @@ Java_GMP_natDoubleValue(JNIEnv *env,
 
 }
 
-/* /\* */
-/*  * @param this  a NativeMPI instance. */
-/*  * @param x  an instance of NativeMPI's Pointer. */
-/*  * @return  -1, 0, +1 if x is respectively less than, equal to, or greater */
-/*  *          than y. */
-/*  *\/ */
-/* JNIEXPORT jint JNICALL */
-/* Java_gnu_java_math_GMP_natCompare(JNIEnv *env, jobject this, */
-/*                                                     jobject x) */
-/* { */
+/* @param this  a NativeMPI instance.
+   @param x  an instance of NativeMPI's Pointer.
+   @return  -1, 0, +1 if x is respectively less than, equal to, or greater
+         than y.
+*/
+JNIEXPORT jint JNICALL
+Java_GMP_natCompare(JNIEnv *env, jobject this,
+                                                    jobject x)
+{
 
-/*   mpz_ptr _this, _x; */
-/*   int res; */
+  mpz_ptr _this, _x;
+  int res;
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_ptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _x = (mpz_ptr)JCL_GetRawData (env, x); */
-/*   res = mpz_cmp (_this, _x); */
-/*   TRACE("end"); */
-/*   if (res == 0) */
-/*     return ((jint)0); */
-/*   else if (res < 0) */
-/*     return ((jint)-1); */
-/*   else */
-/*     return ((jint)1); */
+  TRACE("begin");
+  _this = (mpz_ptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _x = (mpz_ptr)JCL_GetRawData (env, x);
+  res = mpz_cmp (_this, _x);
+  TRACE("end");
+  if (res == 0)
+    return ((jint)0);
+  else if (res < 0)
+    return ((jint)-1);
+  else
+    return ((jint)1);
 
-/* } */
+}
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @param x  an instance of NativeMPI's Pointer. */
-/*  * */
-/*  * output: */
-/*  * @param r  a NativeMPI's Pointer such that r = this + x. */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natAdd(JNIEnv *env, jobject this, */
-/*                                                 jobject x, jobject r) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this, _x; */
-/*   mpz_ptr _r; */
+/* @param this  an instance of NativeMPI.
+ * @param x  an instance of NativeMPI's Pointer.
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _x = (mpz_srcptr)JCL_GetRawData (env, x); */
-/*   _r = (mpz_ptr)JCL_GetRawData (env, r); */
-/*   mpz_add (_r, _this, _x); */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) x; */
-/*   (void) r; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+ * output:
+ * @param r  a NativeMPI's Pointer such that r = this + x.
+ */
+JNIEXPORT void JNICALL
+Java_GMP_natAdd(JNIEnv *env, jobject this,
+                                                jobject x, jobject r)
+{
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @param x  an instance of NativeMPI's Pointer. */
-/*  * */
-/*  * output: */
-/*  * @param r  a NativeMPI's Pointer such that r = this - x. */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natSubtract(JNIEnv *env, jobject this, */
-/*                                                      jobject x, jobject r) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this, _x; */
-/*   mpz_ptr _r; */
+  mpz_srcptr _this, _x;
+  mpz_ptr _r;
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _x = (mpz_srcptr)JCL_GetRawData (env, x); */
-/*   _r = (mpz_ptr)JCL_GetRawData (env, r); */
-/*   mpz_sub (_r, _this, _x); */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) x; */
-/*   (void) r; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _x = (mpz_srcptr)JCL_GetRawData (env, x);
+  _r = (mpz_ptr)JCL_GetRawData (env, r);
+  mpz_add (_r, _this, _x);
+  TRACE("end");
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @param x  an instance of NativeMPI's Pointer. */
-/*  * */
-/*  * output: */
-/*  * @param r  a NativeMPI's Pointer such that r = this * x. */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natMultiply(JNIEnv *env, jobject this, */
-/*                                                      jobject x, jobject r) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this, _x; */
-/*   mpz_ptr _r; */
+}
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _x = (mpz_srcptr)JCL_GetRawData (env, x); */
-/*   _r = (mpz_ptr)JCL_GetRawData (env, r); */
-/*   mpz_mul (_r, _this, _x); */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) x; */
-/*   (void) r; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+/* @param this  an instance of NativeMPI. */
+/* @param x  an instance of NativeMPI's Pointer. */
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @param x  an instance of NativeMPI's Pointer. */
-/*  * */
-/*  * output: */
-/*  * @param r  a NativeMPI's Pointer such that r = this div x. */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natQuotient(JNIEnv *env, jobject this, */
-/*                                                      jobject x, jobject r) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this, _x; */
-/*   mpz_ptr _r; */
+/* output: */
+/* @param r  a NativeMPI's Pointer such that r = this - x. */
+JNIEXPORT void JNICALL
+Java_GMP_natSubtract(JNIEnv *env, jobject this,
+                                                     jobject x, jobject r)
+{
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _x = (mpz_srcptr)JCL_GetRawData (env, x); */
-/*   _r = (mpz_ptr)JCL_GetRawData (env, r); */
-/*   mpz_tdiv_q (_r, _this, _x); */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) x; */
-/*   (void) r; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+  mpz_srcptr _this, _x;
+  mpz_ptr _r;
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @param x  an instance of NativeMPI's Pointer. */
-/*  * */
-/*  * output: */
-/*  * @param r  a NativeMPI's Pointer such that r = this mod x. */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natRemainder(JNIEnv *env, jobject this, */
-/*                                                       jobject x, jobject r) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this, _x; */
-/*   mpz_ptr _r; */
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _x = (mpz_srcptr)JCL_GetRawData (env, x);
+  _r = (mpz_ptr)JCL_GetRawData (env, r);
+  mpz_sub (_r, _this, _x);
+  TRACE("end");
+}
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _x = (mpz_srcptr)JCL_GetRawData (env, x); */
-/*   _r = (mpz_ptr)JCL_GetRawData (env, r); */
-/*   mpz_tdiv_r (_r, _this, _x); */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) x; */
-/*   (void) r; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+/*
+ * @param this  an instance of NativeMPI.
+ * @param x  an instance of NativeMPI's Pointer.
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @param x  an instance of NativeMPI's Pointer. */
-/*  * */
-/*  * output: */
-/*  * @param q  a NativeMPI's Pointer such that q = this div x. */
-/*  * @param r  a NativeMPI's Pointer such that r = this mod x. */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natQuotientAndRemainder(JNIEnv *env, */
-/*                                                                  jobject this, */
-/*                                                                  jobject x, */
-/*                                                                  jobject q, */
-/*                                                                  jobject r) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this, _x; */
-/*   mpz_ptr _q, _r; */
+ * output:
+ * @param r  a NativeMPI's Pointer such that r = this * x.
+ */
+JNIEXPORT void JNICALL
+Java_natMultiply(JNIEnv *env, jobject this,
+                                                     jobject x, jobject r)
+{
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _x = (mpz_srcptr)JCL_GetRawData (env, x); */
-/*   _q = (mpz_ptr)JCL_GetRawData (env, q); */
-/*   _r = (mpz_ptr)JCL_GetRawData (env, r); */
-/*   mpz_tdiv_qr (_q, _r, _this, _x); */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) x; */
-/*   (void) q; */
-/*   (void) r; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+  mpz_srcptr _this, _x;
+  mpz_ptr _r;
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @param x  an instance of NativeMPI's Pointer. */
-/*  * */
-/*  * output: */
-/*  * @param r  a NativeMPI's Pointer such that r = this mod x. */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natModulo(JNIEnv *env, jobject this, */
-/*                                                    jobject x, jobject r) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this, _x; */
-/*   mpz_ptr _r; */
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _x = (mpz_srcptr)JCL_GetRawData (env, x);
+  _r = (mpz_ptr)JCL_GetRawData (env, r);
+  mpz_mul (_r, _this, _x);
+  TRACE("end");
+}
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _x = (mpz_srcptr)JCL_GetRawData (env, x); */
-/*   _r = (mpz_ptr)JCL_GetRawData (env, r); */
-/*   mpz_mod (_r, _this, _x); */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) x; */
-/*   (void) r; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+/* @param this  an instance of NativeMPI.
+ * @param x  an instance of NativeMPI's Pointer.
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @param n  a non-negative number to raise this to. */
-/*  * */
-/*  * output: */
-/*  * @param r  a NativeMPI's Pointer such that r = this ** n. */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natPow(JNIEnv *env, jobject this, */
-/*                                                 jint n, jobject r) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this; */
-/*   mpz_ptr _r; */
+ * output:
+ * @param r  a NativeMPI's Pointer such that r = this div x.
+*/
+JNIEXPORT void JNICALL
+Java_GMP_natQuotient(JNIEnv *env, jobject this,
+                                                     jobject x, jobject r)
+{
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _r = (mpz_ptr)JCL_GetRawData (env, r); */
-/*   mpz_pow_ui (_r, _this, (unsigned long)n); */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) n; */
-/*   (void) r; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+  mpz_srcptr _this, _x;
+  mpz_ptr _r;
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @param e  an instance of NativeMPI's Pointer. */
-/*  * @param m  another instance of NativeMPI's Pointer. */
-/*  * */
-/*  * output: */
-/*  * @param r  a NativeMPI's Pointer such that r = (this**e) mod m. */
-/*  * */
-/*  * @throws java.lang.ArithmeticException if e is negative and (1 / this) mod m */
-/*  *         has no multiplicative inverse. */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natModPow(JNIEnv *env, jobject this, */
-/*                                                    jobject e, jobject m, */
-/*                                                    jobject r) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this, _e, _m; */
-/*   mpz_ptr _r; */
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _x = (mpz_srcptr)JCL_GetRawData (env, x);
+  _r = (mpz_ptr)JCL_GetRawData (env, r);
+  mpz_tdiv_q (_r, _this, _x);
+  TRACE("end");
+}
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _e = (mpz_srcptr)JCL_GetRawData (env, e); */
-/*   _m = (mpz_srcptr)JCL_GetRawData (env, m); */
-/*   _r = (mpz_ptr)JCL_GetRawData (env, r); */
-/*   /\* the documentation of mpz_powm(rop, b, e, m) states that it: "Set rop to */
-/*    * (b raised to e) modulo m.  Negative e is supported if an inverse b^-1 mod m */
-/*    * exists.... If an inverse doesn't exist then a divide by zero is raised." */
-/*    * to work around this case we use the same code as in the pure java class; */
-/*    * i.e.: */
-/*    *     if (e.isNegative()) */
-/*    *       return this.modInverse(m).modPow(e.negate(), m); *\/ */
-/*   if (mpz_sgn (_e) == -1) */
-/*     { */
-/*       mpz_t _w;  /\* a temporary work mpi *\/ */
-/*       const int res = mpz_invert (_r, _this, _m); */
-/*       if (res == 0) */
-/*         { */
-/*           //JCL_ThrowException (env, "java/lang/ArithmeticException", */
-/*           //                    "No multiplicative inverse modulo the designated number exists"); */
-/*         } */
-/*       mpz_init (_w); */
-/*       mpz_neg (_w, _e); */
-/*       mpz_powm (_r, _r, _w, _m); */
-/*       mpz_clear (_w); */
-/*     } */
-/*   else */
-/*     { */
-/*       mpz_powm (_r, _this, _e, _m); */
-/*     } */
+/*
+ * @param this  an instance of NativeMPI.
+ * @param x  an instance of NativeMPI's Pointer.
+ *
+ * output:
+ * @param r  a NativeMPI's Pointer such that r = this mod x.
+ */
+JNIEXPORT void JNICALL
+Java_GMP_natRemainder(JNIEnv *env, jobject this,
+                                                      jobject x, jobject r)
+{
 
-/*   while (mpz_sgn (_r) == -1) */
-/*     { */
-/*       mpz_add (_r, _r, _m); */
-/*     } */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) e; */
-/*   (void) m; */
-/*   (void) r; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+  mpz_srcptr _this, _x;
+  mpz_ptr _r;
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @param m  an instance of NativeMPI's Pointer. */
-/*  * */
-/*  * output: */
-/*  * @param r  a NativeMPI's Pointer such that r = (1 / this) mod m. */
-/*  * @throws java.lang.ArithmeticException if (1 / this) mod m has no */
-/*  *         multiplicative inverse. */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natModInverse(JNIEnv *env, */
-/*                                                        jobject this, */
-/*                                                        jobject m, jobject r) */
-/* { */
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _x = (mpz_srcptr)JCL_GetRawData (env, x);
+  _r = (mpz_ptr)JCL_GetRawData (env, r);
+  mpz_tdiv_r (_r, _this, _x);
+  TRACE("end");
 
-/*   mpz_srcptr _this, _m; */
-/*   mpz_ptr _r; */
-/*   int res; */
+}
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _m = (mpz_srcptr)JCL_GetRawData (env, m); */
-/*   _r = (mpz_ptr)JCL_GetRawData (env, r); */
-/*   res = mpz_invert (_r, _this, _m); */
-/*   if (res == 0) */
-/*     { */
-/*       //JCL_ThrowException (env, "java/lang/ArithmeticException", */
-/*       //                    "No multiplicative inverse modulo the designated number exists"); */
-/*     } */
+/*
+ * @param this  an instance of NativeMPI.
+ * @param x  an instance of NativeMPI's Pointer.
+ *
+ * output:
+ * @param q  a NativeMPI's Pointer such that q = this div x.
+ * @param r  a NativeMPI's Pointer such that r = this mod x.
+ */
+JNIEXPORT void JNICALL
+Java_GMP_natQuotientAndRemainder(JNIEnv *env,
+                                                                 jobject this,
+                                                                 jobject x,
+                                                                 jobject q,
+                                                                 jobject r)
+{
 
-/*   while (mpz_sgn (_r) == -1) */
-/*     { */
-/*       mpz_add (_r, _r, _m); */
-/*     } */
-/*   TRACE("end"); */
+  mpz_srcptr _this, _x;
+  mpz_ptr _q, _r;
 
-/* } */
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _x = (mpz_srcptr)JCL_GetRawData (env, x);
+  _q = (mpz_ptr)JCL_GetRawData (env, q);
+  _r = (mpz_ptr)JCL_GetRawData (env, r);
+  mpz_tdiv_qr (_q, _r, _this, _x);
+  TRACE("end");
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @param x  an instance of NativeMPI's Pointer. */
-/*  * */
-/*  * output: */
-/*  * @param r  a NativeMPI's Pointer such that r is the GCD of this and x. */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natGCD(JNIEnv *env, jobject this, */
-/*                                                 jobject x, jobject r) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this, _x; */
-/*   mpz_ptr _r; */
+}
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _x = (mpz_srcptr)JCL_GetRawData (env, x); */
-/*   _r = (mpz_ptr)JCL_GetRawData (env, r); */
-/*   mpz_gcd (_r, _this, _x); */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) x; */
-/*   (void) r; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+/*
+ * @param this  an instance of NativeMPI.
+ * @param x  an instance of NativeMPI's Pointer.
+ *
+ * output:
+ * @param r  a NativeMPI's Pointer such that r = this mod x.
+ */
+JNIEXPORT void JNICALL
+Java_GMP_natModulo(JNIEnv *env, jobject this,
+                                                   jobject x, jobject r)
+{
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @param n  number of Miller-Rabin tests to conduct. */
-/*  * @return  2 if this is definitely prime. Returns 1 if this is probably prime */
-/*  *          (without being certain). Finally, returns 0 if this is definitely */
-/*  *          composite. */
-/*  *\/ */
-/* JNIEXPORT jint JNICALL */
-/* Java_gnu_java_math_GMP_natTestPrimality(JNIEnv *env, */
-/*                                                           jobject this, jint n) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this; */
+  mpz_srcptr _this, _x;
+  mpz_ptr _r;
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   TRACE("end"); */
-/*   return ((jint)mpz_probab_prime_p (_this, (int)n)); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) n; */
-/*   //throw_config_exception(env); */
-/*   return (0); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _x = (mpz_srcptr)JCL_GetRawData (env, x);
+  _r = (mpz_ptr)JCL_GetRawData (env, r);
+  mpz_mod (_r, _this, _x);
+  TRACE("end");
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @param n  the non-negative number of positions to shift right this by. */
-/*  * */
-/*  * output: */
-/*  * @param r  a NativeMPI's Pointer such that r = this * 2**n. */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natShiftLeft(JNIEnv *env, jobject this, */
-/*                                                       jint n, jobject r) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this; */
-/*   mpz_ptr _r; */
+}
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _r = (mpz_ptr)JCL_GetRawData (env, r); */
-/*   mpz_mul_2exp (_r, _this, (unsigned long)n); */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) n; */
-/*   (void) r; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+/*
+ * @param this  an instance of NativeMPI.
+ * @param n  a non-negative number to raise this to.
+ *
+ * output:
+ * @param r  a NativeMPI's Pointer such that r = this ** n.
+ */
+JNIEXPORT void JNICALL
+Java_GMP_natPow(JNIEnv *env, jobject this,
+                                                jint n, jobject r)
+{
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @param n  the non-negative number of positions to shift left this by. */
-/*  * */
-/*  * output: */
-/*  * @param r  a NativeMPI's Pointer such that r = floor(this / 2**n). */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natShiftRight(JNIEnv *env, */
-/*                                                        jobject this, jint n, */
-/*                                                        jobject r) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this; */
-/*   mpz_ptr _r; */
+  mpz_srcptr _this;
+  mpz_ptr _r;
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _r = (mpz_ptr)JCL_GetRawData (env, r); */
-/*   mpz_fdiv_q_2exp (_r, _this, (unsigned long)n); */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) n; */
-/*   (void) r; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _r = (mpz_ptr)JCL_GetRawData (env, r);
+  mpz_pow_ui (_r, _this, (unsigned long)n);
+  TRACE("end");
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @return  the 0-based index of the lowest significant bit set (to 1) in this. */
-/*  *\/ */
-/* JNIEXPORT jint JNICALL */
-/* Java_gnu_java_math_GMP_natLowestSetBit(JNIEnv *env, */
-/*                                                          jobject this) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this; */
+}
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   TRACE("end"); */
-/*   return ((jint)mpz_scan1 (_this, 0)); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   //throw_config_exception(env); */
-/*   return (-1); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+/*
+ * @param this  an instance of NativeMPI.
+ * @param e  an instance of NativeMPI's Pointer.
+ * @param m  another instance of NativeMPI's Pointer.
+ *
+ * output:
+ * @param r  a NativeMPI's Pointer such that r = (this**e) mod m.
+ *
+ * @throws java.lang.ArithmeticException if e is negative and (1 / this) mod m
+ *         has no multiplicative inverse.
+ */
+JNIEXPORT void JNICALL
+Java_GMP_natModPow(JNIEnv *env, jobject this,
+                                                   jobject e, jobject m,
+                                                   jobject r)
+{
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * */
-/*  * output: */
-/*  * @param r  a NativeMPI's Pointer such that r = abs(x). */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natAbs(JNIEnv *env, jobject this, */
-/*                                                 jobject r) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this; */
-/*   mpz_ptr _r; */
+  mpz_srcptr _this, _e, _m;
+  mpz_ptr _r;
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _r = (mpz_ptr)JCL_GetRawData (env, r); */
-/*   mpz_abs (_r, _this); */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) r; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _e = (mpz_srcptr)JCL_GetRawData (env, e);
+  _m = (mpz_srcptr)JCL_GetRawData (env, m);
+  _r = (mpz_ptr)JCL_GetRawData (env, r);
+  /* the documentation of mpz_powm(rop, b, e, m) states that it: "Set rop to
+   * (b raised to e) modulo m.  Negative e is supported if an inverse b^-1 mod m
+   * exists.... If an inverse doesn't exist then a divide by zero is raised."
+   * to work around this case we use the same code as in the pure java class;
+   * i.e.:
+   *     if (e.isNegative())
+   *       return this.modInverse(m).modPow(e.negate(), m); */
+  if (mpz_sgn (_e) == -1)
+    {
+      mpz_t _w;  /* a temporary work mpi */
+      const int res = mpz_invert (_r, _this, _m);
+      if (res == 0)
+        {
+          //JCL_ThrowException (env, "java/lang/ArithmeticException",
+          //                    "No multiplicative inverse modulo the designated number exists");
+        }
+      mpz_init (_w);
+      mpz_neg (_w, _e);
+      mpz_powm (_r, _r, _w, _m);
+      mpz_clear (_w);
+    }
+  else
+    {
+      mpz_powm (_r, _this, _e, _m);
+    }
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * */
-/*  * output: */
-/*  * @param r  a NativeMPI's Pointer such that r = -x. */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natNegate(JNIEnv *env, jobject this, */
-/*                                                    jobject r) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this; */
-/*   mpz_ptr _r; */
+  while (mpz_sgn (_r) == -1)
+    {
+      mpz_add (_r, _r, _m);
+    }
+  TRACE("end");
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _r = (mpz_ptr)JCL_GetRawData (env, r); */
-/*   mpz_neg (_r, _this); */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) r; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+}
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @return  the number of bits needed to represent this. */
-/*  *\/ */
-/* JNIEXPORT jint JNICALL */
-/* Java_gnu_java_math_GMP_natBitLength(JNIEnv *env, jobject this) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this; */
+/*
+ * @param this  an instance of NativeMPI.
+ * @param m  an instance of NativeMPI's Pointer.
+ *
+ * output:
+ * @param r  a NativeMPI's Pointer such that r = (1 / this) mod m.
+ * @throws java.lang.ArithmeticException if (1 / this) mod m has no
+ *         multiplicative inverse.
+ */
+JNIEXPORT void JNICALL
+Java_GMP_natModInverse(JNIEnv *env,
+                                                       jobject this,
+                                                       jobject m, jobject r)
+{
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   TRACE("end"); */
-/*   return ((jint)mpz_sizeinbase (_this, 2)); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   //throw_config_exception(env); */
-/*   return (-1); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+  mpz_srcptr _this, _m;
+  mpz_ptr _r;
+  int res;
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. It MUST be >= ZERO. */
-/*  * @return  the number of bits set (to 1) in this. */
-/*  *\/ */
-/* JNIEXPORT jint JNICALL */
-/* Java_gnu_java_math_GMP_natSetBitCount(JNIEnv *env, */
-/*                                                         jobject this) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this; */
-/*   mpz_ptr _bi; */
-/*   unsigned long res = 0; */
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _m = (mpz_srcptr)JCL_GetRawData (env, m);
+  _r = (mpz_ptr)JCL_GetRawData (env, r);
+  res = mpz_invert (_r, _this, _m);
+  if (res == 0)
+    {
+      //JCL_ThrowException (env, "java/lang/ArithmeticException",
+      //                    "No multiplicative inverse modulo the designated number exists");
+    }
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   switch (mpz_sgn (_this)) */
-/*     { */
-/*       case -1: */
-/*         /\* initialize --GMP sets the value to zero. *\/ */
-/*         _bi = (mpz_ptr)JCL_malloc (env, sizeof (mpz_t)); */
-/*         mpz_init (_bi); */
-/*         mpz_neg (_bi, _this); */
-/*         res = mpz_popcount (_bi); */
-/*         mpz_clear (_bi); */
-/*         free (_bi); */
-/*         break; */
-/*       case 0: */
-/*         res = 0; */
-/*         break; */
-/*       case 1: */
-/*         res = mpz_popcount (_this); */
-/*       default: */
-/*         //JCL_ThrowException (env, "java/lang/Error", */
-/*         //                    "Unexpected sign value for a native MPI"); */
-/*     } */
-/*   TRACE("end"); */
-/*   return ((jint)res); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   //throw_config_exception(env); */
-/*   return (ULONG_MAX); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+  while (mpz_sgn (_r) == -1)
+    {
+      mpz_add (_r, _r, _m);
+    }
+  TRACE("end");
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @param x  an instance of NativeMPI's Pointer. */
-/*  * */
-/*  * output: */
-/*  * @param r  a NativeMPI's Pointer such that r = this ^ x. */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natXor(JNIEnv *env, jobject this, */
-/*                                                 jobject x, jobject r) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this, _x; */
-/*   mpz_ptr _r; */
+}
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _x = (mpz_srcptr)JCL_GetRawData (env, x); */
-/*   _r = (mpz_ptr)JCL_GetRawData (env, r); */
-/*   mpz_xor (_r, _this, _x); */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) x; */
-/*   (void) r; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+/*
+ * @param this  an instance of NativeMPI.
+ * @param x  an instance of NativeMPI's Pointer.
+ *
+ * output:
+ * @param r  a NativeMPI's Pointer such that r is the GCD of this and x.
+ */
+JNIEXPORT void JNICALL
+Java_GMP_natGCD(JNIEnv *env, jobject this,
+                                                jobject x, jobject r)
+{
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @param x  an instance of NativeMPI's Pointer. */
-/*  * */
-/*  * output: */
-/*  * @param r  a NativeMPI's Pointer such that r = this | x. */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natOr(JNIEnv *env, jobject this, */
-/*                                                jobject x, jobject r) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this, _x; */
-/*   mpz_ptr _r; */
+  mpz_srcptr _this, _x;
+  mpz_ptr _r;
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _x = (mpz_srcptr)JCL_GetRawData (env, x); */
-/*   _r = (mpz_ptr)JCL_GetRawData (env, r); */
-/*   mpz_ior (_r, _this, _x); */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) x; */
-/*   (void) r; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _x = (mpz_srcptr)JCL_GetRawData (env, x);
+  _r = (mpz_ptr)JCL_GetRawData (env, r);
+  mpz_gcd (_r, _this, _x);
+  TRACE("end");
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @param x  an instance of NativeMPI's Pointer. */
-/*  * */
-/*  * output: */
-/*  * @param r  a NativeMPI's Pointer such that r = this & x. */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natAnd(JNIEnv *env, jobject this, */
-/*                                                 jobject x, jobject r) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this, _x; */
-/*   mpz_ptr _r; */
+}
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _x = (mpz_srcptr)JCL_GetRawData (env, x); */
-/*   _r = (mpz_ptr)JCL_GetRawData (env, r); */
-/*   mpz_and (_r, _this, _x); */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) x; */
-/*   (void) r; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+/*
+ * @param this  an instance of NativeMPI.
+ * @param n  number of Miller-Rabin tests to conduct.
+ * @return  2 if this is definitely prime. Returns 1 if this is probably prime
+ *          (without being certain). Finally, returns 0 if this is definitely
+ *          composite.
+ */
+JNIEXPORT jint JNICALL
+Java_GMP_natTestPrimality(JNIEnv *env,
+                                                          jobject this, jint n)
+{
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @param x  an instance of NativeMPI's Pointer. */
-/*  * */
-/*  * output: */
-/*  * @param r  a NativeMPI's Pointer such that r = this & ~x. */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natAndNot(JNIEnv *env, jobject this, */
-/*                                                    jobject x, jobject r) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this, _x; */
-/*   mpz_ptr _r; */
+  mpz_srcptr _this;
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _x = (mpz_srcptr)JCL_GetRawData (env, x); */
-/*   _r = (mpz_ptr)JCL_GetRawData (env, r); */
-/*   mpz_com (_r, _x); */
-/*   mpz_and (_r, _this, _r); */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) x; */
-/*   (void) r; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  TRACE("end");
+  return ((jint)mpz_probab_prime_p (_this, (int)n));
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @param n  the 0-based index position of the bit to flip in this. n MUST be */
-/*  *           greater than, or equal to 0. */
-/*  * */
-/*  * output: */
-/*  * @param r  a copy of this NativeMPI's Pointer with its n-th bit flipped. */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natFlipBit(JNIEnv *env, jobject this, */
-/*                                                     jint n, jobject r) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this; */
-/*   mpz_ptr _r; */
+}
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _r = (mpz_ptr)JCL_GetRawData (env, r); */
-/*   mpz_set (_r, _this); */
-/*   /\* GNU MP versions earlier than 4.2 do not define this method: */
-/*    *   mpz_combit (_r, (unsigned long)n); *\/ */
-/*   if (mpz_tstbit (_r, (unsigned long)n) == 1) */
-/*     { */
-/*       mpz_clrbit (_r, (unsigned long)n); */
-/*     } */
-/*   else */
-/*     { */
-/*       mpz_setbit (_r, (unsigned long)n); */
-/*     } */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) n; */
-/*   (void) r; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+/*
+ * @param this  an instance of NativeMPI.
+ * @param n  the non-negative number of positions to shift right this by.
+ *
+ * output:
+ * @param r  a NativeMPI's Pointer such that r = this * 2**n.
+ */
+JNIEXPORT void JNICALL
+Java_GMP_natShiftLeft(JNIEnv *env, jobject this,
+                                                      jint n, jobject r)
+{
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @param n  the 0-based index position of the bit to test in this. n MUST be */
-/*  *           greater than, or equal to 0. */
-/*  * @return  +1, or -1 depending on whether the n-th bit in this is set or not */
-/*  *          respectively. */
-/*  *\/ */
-/* JNIEXPORT jint JNICALL */
-/* Java_gnu_java_math_GMP_natTestBit(JNIEnv *env, jobject this, */
-/*                                                     jint n) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this; */
+  mpz_srcptr _this;
+  mpz_ptr _r;
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   TRACE("end"); */
-/*   return ((jint)mpz_tstbit (_this, (unsigned long)n)); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) n; */
-/*   //throw_config_exception(env); */
-/*   return (-1); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _r = (mpz_ptr)JCL_GetRawData (env, r);
+  mpz_mul_2exp (_r, _this, (unsigned long)n);
+  TRACE("end");
+}
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * @param n  the 0-based index position of the bit to set, or clear, in this. */
-/*  *           n MUST be greater than, or equal to 0. */
-/*  * @param setIt  if true, then the n-th bit in this will be set, otherwise it */
-/*  *           will be cleared. */
-/*  * */
-/*  * output: */
-/*  * @param r  a copy of this NativeMPI's Pointer with its n-th bit set or cleared */
-/*  *           as requested. */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natSetBit(JNIEnv *env, jobject this, */
-/*                                                    jint n, jboolean setIt, */
-/*                                                    jobject r) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this; */
-/*   mpz_ptr _r; */
+/*
+ * @param this  an instance of NativeMPI.
+ * @param n  the non-negative number of positions to shift left this by.
+ *
+ * output:
+ * @param r  a NativeMPI's Pointer such that r = floor(this / 2**n).
+ */
+JNIEXPORT void JNICALL
+Java_GMP_natShiftRight(JNIEnv *env,
+                                                       jobject this, jint n,
+                                                       jobject r)
+{
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _r = (mpz_ptr)JCL_GetRawData (env, r); */
-/*   mpz_set (_r, _this); */
-/*   if (setIt == JNI_TRUE) */
-/*     { */
-/*       mpz_setbit (_r, (unsigned long)n); */
-/*     } */
-/*   else */
-/*     { */
-/*       mpz_clrbit (_r, (unsigned long)n); */
-/*     } */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) n; */
-/*   (void) setIt; */
-/*   (void) r; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+  mpz_srcptr _this;
+  mpz_ptr _r;
 
-/* /\* */
-/*  * @param this  an instance of NativeMPI. */
-/*  * */
-/*  * output: */
-/*  * @param r  a NativeMPI's Pointer such that r = ~this. */
-/*  *\/ */
-/* JNIEXPORT void JNICALL */
-/* Java_gnu_java_math_GMP_natNot(JNIEnv *env, jobject this, */
-/*                                                 jobject r) */
-/* { */
-/* #if defined(WITH_GNU_MP) */
-/*   mpz_srcptr _this; */
-/*   mpz_ptr _r; */
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _r = (mpz_ptr)JCL_GetRawData (env, r);
+  mpz_fdiv_q_2exp (_r, _this, (unsigned long)n);
+  TRACE("end");
+}
 
-/*   TRACE("begin"); */
-/*   _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr)); */
-/*   _r = (mpz_ptr)JCL_GetRawData (env, r); */
-/*   mpz_com (_r, _this); */
-/*   TRACE("end"); */
-/* #else /\* !defined(WITH_GNU_MP) *\/ */
-/*   (void) this; */
-/*   (void) r; */
-/*   //throw_config_exception(env); */
-/* #endif /\* defined(WITH_GNU_MP) *\/ */
-/* } */
+/*
+ * @param this  an instance of NativeMPI.
+ * @return  the 0-based index of the lowest significant bit set (to 1) in this.
+ */
+JNIEXPORT jint JNICALL
+Java_GMP_natLowestSetBit(JNIEnv *env,
+                                                         jobject this)
+{
+
+  mpz_srcptr _this;
+
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  TRACE("end");
+  return ((jint)mpz_scan1 (_this, 0));
+}
+
+/*
+ * @param this  an instance of NativeMPI.
+ *
+ * output:
+ * @param r  a NativeMPI's Pointer such that r = abs(x).
+ */
+JNIEXPORT void JNICALL
+Java_GMP_natAbs(JNIEnv *env, jobject this,
+                                                jobject r)
+{
+
+  mpz_srcptr _this;
+  mpz_ptr _r;
+
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _r = (mpz_ptr)JCL_GetRawData (env, r);
+  mpz_abs (_r, _this);
+  TRACE("end");
+}
+
+/*
+ * @param this  an instance of NativeMPI.
+ *
+ * output:
+ * @param r  a NativeMPI's Pointer such that r = -x.
+ */
+JNIEXPORT void JNICALL
+Java_GMP_natNegate(JNIEnv *env, jobject this,
+                                                   jobject r)
+{
+
+  mpz_srcptr _this;
+  mpz_ptr _r;
+
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _r = (mpz_ptr)JCL_GetRawData (env, r);
+  mpz_neg (_r, _this);
+  TRACE("end");
+}
+
+/*
+ * @param this  an instance of NativeMPI.
+ * @return  the number of bits needed to represent this.
+ */
+JNIEXPORT jint JNICALL
+Java_GMP_natBitLength(JNIEnv *env, jobject this)
+{
+
+  mpz_srcptr _this;
+
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  TRACE("end");
+  return ((jint)mpz_sizeinbase (_this, 2));
+
+}
+
+/*
+ * @param this  an instance of NativeMPI. It MUST be >= ZERO.
+ * @return  the number of bits set (to 1) in this.
+ */
+JNIEXPORT jint JNICALL
+Java_GMP_natSetBitCount(JNIEnv *env,
+                                                        jobject this)
+{
+
+  mpz_srcptr _this;
+  mpz_ptr _bi;
+  unsigned long res = 0;
+
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  switch (mpz_sgn (_this))
+    {
+      case -1:
+        /* initialize --GMP sets the value to zero. */
+        _bi = (mpz_ptr)JCL_malloc (env, sizeof (mpz_t));
+        mpz_init (_bi);
+        mpz_neg (_bi, _this);
+        res = mpz_popcount (_bi);
+        mpz_clear (_bi);
+        free (_bi);
+        break;
+      case 0:
+        res = 0;
+        break;
+      case 1:
+        res = mpz_popcount (_this);
+      default:
+        JCL_ThrowException (env, "java/lang/Error",
+                            "Unexpected sign value for a native MPI");
+    }
+  TRACE("end");
+  return ((jint)res);
+}
+
+/*
+ * @param this  an instance of NativeMPI.
+ * @param x  an instance of NativeMPI's Pointer.
+ *
+ * output:
+ * @param r  a NativeMPI's Pointer such that r = this ^ x.
+ */
+JNIEXPORT void JNICALL
+Java_GMP_natXor(JNIEnv *env, jobject this,
+                                                jobject x, jobject r)
+{
+
+  mpz_srcptr _this, _x;
+  mpz_ptr _r;
+
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _x = (mpz_srcptr)JCL_GetRawData (env, x);
+  _r = (mpz_ptr)JCL_GetRawData (env, r);
+  mpz_xor (_r, _this, _x);
+  TRACE("end");
+}
+
+/*
+ * @param this  an instance of NativeMPI.
+ * @param x  an instance of NativeMPI's Pointer.
+ *
+ * output:
+ * @param r  a NativeMPI's Pointer such that r = this | x.
+ */
+JNIEXPORT void JNICALL
+Java_GMP_natOr(JNIEnv *env, jobject this,
+                                               jobject x, jobject r)
+{
+
+  mpz_srcptr _this, _x;
+  mpz_ptr _r;
+
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _x = (mpz_srcptr)JCL_GetRawData (env, x);
+  _r = (mpz_ptr)JCL_GetRawData (env, r);
+  mpz_ior (_r, _this, _x);
+  TRACE("end");
+}
+
+/*
+ * @param this  an instance of NativeMPI.
+ * @param x  an instance of NativeMPI's Pointer.
+ *
+ * output:
+ * @param r  a NativeMPI's Pointer such that r = this & x.
+ */
+JNIEXPORT void JNICALL
+Java_GMP_natAnd(JNIEnv *env, jobject this,
+                                                jobject x, jobject r)
+{
+
+  mpz_srcptr _this, _x;
+  mpz_ptr _r;
+
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _x = (mpz_srcptr)JCL_GetRawData (env, x);
+  _r = (mpz_ptr)JCL_GetRawData (env, r);
+  mpz_and (_r, _this, _x);
+  TRACE("end");
+}
+
+/*
+ * @param this  an instance of NativeMPI.
+ * @param x  an instance of NativeMPI's Pointer.
+ *
+ * output:
+ * @param r  a NativeMPI's Pointer such that r = this & ~x.
+ */
+JNIEXPORT void JNICALL
+Java_GMP_natAndNot(JNIEnv *env, jobject this,
+                                                   jobject x, jobject r)
+{
+
+  mpz_srcptr _this, _x;
+  mpz_ptr _r;
+
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _x = (mpz_srcptr)JCL_GetRawData (env, x);
+  _r = (mpz_ptr)JCL_GetRawData (env, r);
+  mpz_com (_r, _x);
+  mpz_and (_r, _this, _r);
+  TRACE("end");
+}
+
+/*
+ * @param this  an instance of NativeMPI.
+ * @param n  the 0-based index position of the bit to flip in this. n MUST be
+ *           greater than, or equal to 0.
+ *
+ * output:
+ * @param r  a copy of this NativeMPI's Pointer with its n-th bit flipped.
+ */
+JNIEXPORT void JNICALL
+Java_GMP_natFlipBit(JNIEnv *env, jobject this,
+                                                    jint n, jobject r)
+{
+
+  mpz_srcptr _this;
+  mpz_ptr _r;
+
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _r = (mpz_ptr)JCL_GetRawData (env, r);
+  mpz_set (_r, _this);
+  /* GNU MP versions earlier than 4.2 do not define this method:
+   *   mpz_combit (_r, (unsigned long)n); */
+  if (mpz_tstbit (_r, (unsigned long)n) == 1)
+    {
+      mpz_clrbit (_r, (unsigned long)n);
+    }
+  else
+    {
+      mpz_setbit (_r, (unsigned long)n);
+    }
+  TRACE("end");
+}
+
+/*
+ * @param this  an instance of NativeMPI.
+ * @param n  the 0-based index position of the bit to test in this. n MUST be
+ *           greater than, or equal to 0.
+ * @return  +1, or -1 depending on whether the n-th bit in this is set or not
+ *          respectively.
+ */
+JNIEXPORT jint JNICALL
+Java_GMP_natTestBit(JNIEnv *env, jobject this,
+                                                    jint n)
+{
+
+  mpz_srcptr _this;
+
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  TRACE("end");
+  return ((jint)mpz_tstbit (_this, (unsigned long)n));
+
+}
+
+/*
+ * @param this  an instance of NativeMPI.
+ * @param n  the 0-based index position of the bit to set, or clear, in this.
+ *           n MUST be greater than, or equal to 0.
+ * @param setIt  if true, then the n-th bit in this will be set, otherwise it
+ *           will be cleared.
+ *
+ * output:
+ * @param r  a copy of this NativeMPI's Pointer with its n-th bit set or cleared
+ *           as requested.
+ */
+JNIEXPORT void JNICALL
+Java_GMP_natSetBit(JNIEnv *env, jobject this,
+                                                   jint n, jboolean setIt,
+                                                   jobject r)
+{
+  mpz_srcptr _this;
+  mpz_ptr _r;
+
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _r = (mpz_ptr)JCL_GetRawData (env, r);
+  mpz_set (_r, _this);
+  if (setIt == JNI_TRUE)
+    {
+      mpz_setbit (_r, (unsigned long)n);
+    }
+  else
+    {
+      mpz_clrbit (_r, (unsigned long)n);
+    }
+  TRACE("end");
+}
+
+/*
+ * @param this  an instance of NativeMPI.
+ *
+ * output:
+ * @param r  a NativeMPI's Pointer such that r = ~this.
+ */
+JNIEXPORT void JNICALL
+Java_GMP_natNot(JNIEnv *env, jobject this,
+                                                jobject r)
+{
+
+  mpz_srcptr _this;
+  mpz_ptr _r;
+
+  TRACE("begin");
+  _this = (mpz_srcptr)JCL_GetRawData (env, (*env)->GetObjectField (env, this, native_ptr));
+  _r = (mpz_ptr)JCL_GetRawData (env, r);
+  mpz_com (_r, _this);
+  TRACE("end");
+}
