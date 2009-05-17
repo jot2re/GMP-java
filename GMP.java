@@ -49,7 +49,7 @@ public final class GMP
   public GMP()
   {
       super();
-      natInitializeLibrary();
+      //natInitializeLibrary();
       natInitialize();
   }
 
@@ -436,16 +436,16 @@ public final class GMP
   private native void natInitialize();
   private native void natFinalize();
   
-   private native void natFromLong(long n);
-   private native void natFromBI(Pointer x);
+  private native void natFromLong(long n);
+  private native void natFromBI(Pointer x);
   private native void natFromByteArray(byte[] v);
-   private native int natFromString(String s, int rdx);
+  private native int natFromString(String s, int rdx);
   private native void natFromSignedMagnitude(byte[] m, boolean isNegative);
   
-   private native String natToString(int base);
+  private native String natToString(int base);
   private native void natToByteArray(byte[] r);
   private native int natAbsIntValue();
-   private native double natDoubleValue();
+  private native double natDoubleValue();
   
   private native int natCompare(Pointer y);
   private native void natAdd(Pointer x, Pointer r);
@@ -475,26 +475,5 @@ public final class GMP
   private native int natTestBit(int n);
   private native void natSetBit(int n, boolean setIt, Pointer r);
   private native void natNot(Pointer r);
-
-    static 
-    {
-        System.loadLibrary("nativegmp");
-    }
-
-    public static void main(String[] args) 
-    {
-	GMP g = new GMP();
-	GMP h = new GMP();
-	System.out.println("Initializing a GMP number with value 9...");
-	g.fromLong((long)9);
-	System.out.println("done");
-	System.out.println("Value: "+g.toString());
-	System.out.println("Value: "+g.doubleValue());
-	h.fromBI(g);
-	System.out.println("Value of h: "+h);
-	g.add(g,h);
-	System.out.println("Value: "+h.toString());
-    }
-
 
 }

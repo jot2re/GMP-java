@@ -94,9 +94,11 @@ public class GMPInteger extends Number implements Comparable<GMPInteger>
   /** The alter-ego GMP instance for this. */
   private transient GMP mpz;
 
+  /** This is unused, but necessary to initialize the GMP library **/
+  private static final boolean USING_GMP = initializeLibrary();
+
   static
   {
-    
       smallFixNums = null;
       ZERO = valueOf(0L);
       ONE = valueOf(1L);
@@ -314,7 +316,7 @@ public class GMPInteger extends Number implements Comparable<GMPInteger>
     boolean result;
     try
     {
-      System.loadLibrary("javamath");
+      System.loadLibrary("nativegmp");
       GMP.natInitializeLibrary();
       result = true;
     }
