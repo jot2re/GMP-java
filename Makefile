@@ -1,12 +1,13 @@
 Includes := -I /usr/include
 LIBS := -L /usr/lib -lgmp -L. -ljcl
-CFLAGS := -shared -static -Wl,-rpath,`pwd`
+CFLAGS := -Wall -shared -static -Wl,-rpath,`pwd`
+JAVA_FLAGS := -Xlint
 
 java: *.java libgmpjava jni
-	javac *.java	
+	javac $(JAVA_FLAGS) *.java	
 
 jni:GMP.java
-	javac GMP.java
+	javac $(JAVA_FLAGS) GMP.java
 	javah -jni GMP	
 
 

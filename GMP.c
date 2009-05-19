@@ -117,7 +117,7 @@ Java_GMP_natInitialize(JNIEnv *env, jobject this)
   mpz_ptr _this; 
 
   TRACE("begin");
-  _this = (mpz_ptr) malloc(sizeof (mpz_t)); (mpz_ptr)JCL_malloc (env, sizeof (mpz_t));
+  _this = (mpz_ptr)JCL_malloc (env, sizeof (mpz_t));
   //initialize --GMP sets the value to zero.
   mpz_init (_this);
   //instantiate the Pointer instance for this NativeMPI.
@@ -531,7 +531,7 @@ Java_GMP_natSubtract(JNIEnv *env, jobject this,
  * @param r  a NativeMPI's Pointer such that r = this * x.
  */
 JNIEXPORT void JNICALL
-Java_natMultiply(JNIEnv *env, jobject this,
+Java_GMP_natMultiply(JNIEnv *env, jobject this,
                                                      jobject x, jobject r)
 {
 
