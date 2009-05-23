@@ -154,34 +154,6 @@ public class GMPInteger extends Number implements Comparable<GMPInteger>
   {
     this();
 
-    int len = s.length();
-    int i, digit;
-    boolean negative;
-    byte[] bytes;
-    char ch = s.charAt(0);
-    if (ch == '-')
-      {
-        negative = true;
-        i = 1;
-        bytes = new byte[len - 1];
-      }
-    else
-      {
-        negative = false;
-        i = 0;
-        bytes = new byte[len];
-      }
-    int byte_len = 0;
-    for ( ; i < len;  i++)
-      {
-        ch = s.charAt(i);
-        digit = Character.digit(ch, radix);
-        if (digit < 0)
-          throw new NumberFormatException("Invalid character at position #" + i);
-        bytes[byte_len++] = (byte) digit;
-      }
-
-    bytes = null;
     if (mpz.fromString(s, radix) != 0)
 	throw new NumberFormatException("String \"" + s
 					+ "\" is NOT a valid number in base "
