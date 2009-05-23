@@ -962,6 +962,7 @@ Java_GMP_natSetBitCount(JNIEnv *env,
         break;
       case 1:
         res = mpz_popcount (_this);
+	break;
       default:
         JCL_ThrowException (env, "java/lang/Error",
                             "Unexpected sign value for a native MPI");
