@@ -45,11 +45,13 @@ public final class GMP
 {
   private Pointer native_ptr;
   private int refCount = 1;
-  
+  static
+    {
+	natInitializeLibrary();
+    }
   public GMP()
   {
       super();
-      //natInitializeLibrary();
       natInitialize();
   }
 

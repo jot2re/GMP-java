@@ -35,15 +35,6 @@ this exception to your version of the library, but you are not
 obligated to do so.  If you do not wish to do so, delete this
 exception statement from your version. */
 
-
-//package java.math;
-
-//import gnu.classpath.Configuration;
-
-//import gnu.java.lang.CPStringBuilder;
-//import GMP;
-//import MPN;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
