@@ -8,7 +8,11 @@
 
 (deftest test-plus
 (are (= _1 _2)
-     123 (.add a b) "Test addition")
+     123 (.add a b) 
+     123 (.add b a)
+     46 (.add a a)
+     200 (.add b b))
+
 )
 
 (deftest test-minus
