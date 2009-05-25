@@ -35,26 +35,51 @@ this exception to your version of the library, but you are not
 obligated to do so.  If you do not wish to do so, delete this
 exception statement from your version. */
 
- 
-
 
 /**
  * Implement BigInteger using GMP
  */
-public final class GMP
+public final class GMP extends Number implements Comparable<GMP>
 {
   private Pointer native_ptr;
   private int refCount = 1;
-  
+  private static final long serialVersionUID = -8287574255936472291L;
+
   static
-    {
-	System.loadLibrary("nativegmp");
-	natInitializeLibrary();
-    }
+  {
+       System.loadLibrary("nativegmp");
+       natInitializeLibrary();
+  }
+
+  public static final GMP ZERO = new GMP(0);
+
   public GMP()
   {
       super();
       natInitialize();
+  }
+
+  private GMP(String s,int base)
+  {
+      this();
+      fromString(s,base);
+  }
+
+  public GMP(String s)
+  {
+	this(s,10);
+  }
+   
+  public GMP(long n)
+  {
+	this();
+	fromLong(n);
+  }
+
+  public GMP(int n)
+  {
+	this();
+	fromLong(n);
   }
 
   private synchronized void acquireRef()
@@ -195,7 +220,7 @@ public final class GMP
     releaseRef();
   }
   
-  public void quotient(GMP x, GMP r)
+  public void divide(GMP x, GMP r)
   {
     acquireRef();
     x.acquireRef();
@@ -230,7 +255,7 @@ public final class GMP
     releaseRef();
   }
   
-  public void modulo(GMP x, GMP r)
+  public void mod(GMP x, GMP r)
   {
     acquireRef();
     x.acquireRef();
@@ -432,6 +457,38 @@ public final class GMP
     return result;
   }
   
+  /* Comparable */
+  public int compareTo(GMP x)
+  {
+      return compare(x);
+  }
+  
+  /* Number */
+  public float floatValue()
+  {
+      return (float) doubleValue();
+  }
+
+  public long longValue()
+  {
+      long result;
+      GMP abs = new GMP();
+      if(this.compareTo(ZERO) < 0)
+	  this.negate(abs); 
+      else
+	  abs.fromBI(this);
+      abs.shiftRight(32,abs);
+      result = abs.absIntValue();
+      result <<= 32;
+      result |= this.absIntValue() & 0xFFFFFFFFL;
+      return this.compareTo(ZERO) < 0 ? - result : result;
+  }
+
+  public int intValue()
+  {
+      int result = absIntValue();
+      return compare(new GMP(0)) < 0 ? - result : result;
+  }
 
   //Native methods .........................................................
   

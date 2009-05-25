@@ -7,6 +7,10 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#undef GMP_serialVersionUID
+#define GMP_serialVersionUID -8742448824652078965LL
+#undef GMP_serialVersionUID
+#define GMP_serialVersionUID -8287574255936472291LL
 /*
  * Class:     GMP
  * Method:    natInitializeLibrary

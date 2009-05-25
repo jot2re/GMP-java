@@ -17,7 +17,7 @@ libjcl:jcl.c
 	gcc  $(Includes) -L /usr/lib/  jcl.c -o libjcl.so $(CFLAGS)
 
 jar: java
-	jar cvf GMPInteger.jar *.class
+	jar cvf GMP.jar *.class
 
 clean: 
 	rm -rf *.class *.so *~ *.jar

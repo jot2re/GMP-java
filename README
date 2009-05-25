@@ -13,26 +13,29 @@ Building
 
 You'll need a recent JVM, the GMP library and its sources to build
 this module. To build it, simply type `make jar`. When the sources finish
-building, you should have a jar file called `GMPInteger.jar` that you can use in your Java application now.
+building, you should have a jar file called `GMPInteger.jar` that you
+can use in your Java application now. 
 
 Using
 -----
-You'll need to add `GMPInteger.jar` to you classpath. The main exposed class is `GMPInteger`. 
-The methods available are the same as those available to `BigInteger` in the `java.math` .Example usage 
-in Jython:
+You'll need to add `GMPInteger.jar` to you classpath. The main exposed
+class is `GMP`. This library follows the same conventions as GMP for
+usage for efficiency reasons. Example usage  in Jython:
 
->>> import GMPInteger as G
+>>> import GMP as G
 >>> a = G("23")
 >>> a
 23
->>> a.add(a)
+>>> a.add(a,a)
 46
->>> a.negate()
+>>> a.negate(a)
 -23
->>> a.multiply(G("10002323"))
+>>> a.multiply(G("10002323"),a)
 230053429
 
 TODO
 ----
- * Finish exposing all GMP functions.
+ * Finish writing unit tests
+ * More docs
+ * Performance numbers
 
