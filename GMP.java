@@ -45,8 +45,10 @@ public final class GMP
 {
   private Pointer native_ptr;
   private int refCount = 1;
+  
   static
     {
+	System.loadLibrary("nativegmp");
 	natInitializeLibrary();
     }
   public GMP()
@@ -430,8 +432,8 @@ public final class GMP
     return result;
   }
   
-    
-    //Native methods .........................................................
+
+  //Native methods .........................................................
   
   public static native void natInitializeLibrary();
   
