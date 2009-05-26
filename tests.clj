@@ -68,26 +68,39 @@
        r (new GMP "8"))
 )
 
-;; (deftest test-pow
-;; (are (= _1 _2)
-;;      (new GMPInteger "1") (.pow a 0) 
-;;      (.multiply a a) (.pow a 2)))
+(deftest test-pow
+  (.pow a 0 res)
+  (is (= 1 res))
+  (.pow a 2 res)
+  (def c (new GMP))
+  (.multiply a a c)
+  (is (= c res))
+)
 
-;; (deftest test-mod
-;; (are (= _1 _2)
-;;      (new GMPInteger "0") (.mod a a) 
-;;      (new GMPInteger "8") (.mod b a)))
+(deftest test-mod
+  (.mod a a res)
+  (is (= 0 res))
+  (.mod b a res)
+  (is (= 8 res))
+)
 
-;; (deftest test-mod-inverse
-;; (are (= _1 _2)
-;;      (new GMPInteger "87") (.modInverse a b) 
-;;      (new GMPInteger "0") (.modInverse b b)))
+(deftest test-mod-inverse
+  (.modInverse a b res)
+  (is (= 87 res))
+  (.mod b b res)
+  (is (= 0 res))
+)
 
-;; (deftest test-mod-pow
-;; (are (= _1 _2)
-;;      (new GMPInteger "12") (.modPow (new GMPInteger "12") a a)
-;;      (new GMPInteger "3") (.modPow (new GMPInteger "112") b a) 
-;;      (new GMPInteger "9") (.modPow (new GMPInteger "37") b a)))
+(deftest test-mod-pow
+  (.modPow (new GMP "12") a a res)
+  (is (= 12 res))
+  
+  (.modPow (new GMP "112") b a res)
+  (is (= 3 res))
+
+  (.modPow (new GMP "37") b a res)
+  (is (= 9 res))
+)
  
 ;; (deftest test-gcd
 ;; (are (= _1 _2)
