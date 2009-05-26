@@ -95,11 +95,16 @@
   (is (= 9 res))
 )
  
-;; (deftest test-gcd
-;; (are (= _1 _2)
-;;      (new GMPInteger "1") (.gcd (new GMPInteger "12") a )
-;;      (new GMPInteger "100") (.gcd (new GMPInteger "-300") b ) 
-;;      (new GMPInteger "100") (.gcd (new GMPInteger "100") b )))
+(deftest test-gcd
+  (.gcd (new GMP "12") a res)
+  (is (= 1 res))
+  
+  (.gcd (new GMP -300) b res)
+  (is (= 100 res))
+  
+  (.gcd (new GMP 100) b res)
+  (is (= 100 res))
+)
 
 ;; (deftest test-is-probable-prime
 ;; (are (= _1 _2)
@@ -107,89 +112,92 @@
 ;;      false (.isProbablePrime b 25 ) 
 ;;      true (.isProbablePrime (new GMPInteger "1166727135273561043807935164711") 25 ))) 
 
-;; (deftest test-signum
-;; (are (= _1 _2)
-;;      1 (.signum a ) 
-;;      -1 (.signum (.negate b ))))
-
 ;; (deftest test-compare-to
 ;; (are (= _1 _2)
 ;;      -1 (.compareTo a b) 
 ;;      -1 (.compareTo (.negate b ) a)))
 
-;; (deftest test-min
-;; (are (= _1 _2)
-;;      a (.min a b) 
-;;      a (.min a a)))
 
-;; (deftest test-max
-;; (are (= _1 _2)
-;;      b (.max a b) 
-;;      a (.max a a)))
+(deftest test-shift-left
+  (.shiftLeft a 2 res)
+  (is (= 92 res))
 
-;; (deftest test-shift-left
-;; (are (= _1 _2)
-;;      (new GMPInteger "92") (.shiftLeft a 2)
-;;      a (.shiftLeft a 0 )))
+  (.shiftLeft a 0 res)
+  (is (= a res))
+)
 
-;; (deftest test-shift-right
-;; (are (= _1 _2)
-;;      (new GMPInteger "400") (.shiftLeft b 2)
-;;      a (.shiftLeft a 0 )))
+(deftest test-shift-right
+  (.shiftLeft b 2 res)
+  (is (= 400 res))
 
-;; (deftest test-to-string
-;; (are (= _1 _2)
-;;      "23" (.toString a)
-;;      "1100100" (.toString b 2 )))
+  (.shiftLeft a 0 res)
+  (is (= a res))
+)
 
-;; (deftest test-int-value
-;; (are (= _1 _2)
-;;      23 (.intValue a)
-;;      100 (.intValue b )))
+(deftest test-to-string
+(are (= _1 _2)
+     "23" (.toString a)
+     "1100100" (.toString b 2 ))
+)
 
-;; (deftest test-long-value
-;; (are (= _1 _2)
-;;      4294967297 (.longValue (new GMPInteger "4294967297"))
-;;      100 (.longValue b )))
+(deftest test-int-value
+(are (= _1 _2)
+     23 (.intValue a)
+     100 (.intValue b ))
+)
 
-;; (deftest test-equals
-;; (are (= _1 _2)
-;;      false (.equals b (new GMPInteger "4294967297"))
-;;      true (.equals a (new GMPInteger "23"))
-;;      true (.equals a a)
-;;      false (.equals 23 a)))
+(deftest test-long-value
+(are (= _1 _2)
+     4294967297 (.longValue (new GMP "4294967297"))
+     100 (.longValue b ))
+)
 
-;; (deftest test-double-value
-;; (are (= _1 _2)
-;;      42949.0 (.doubleValue (new GMPInteger "42949"))
-;;      100.0 (.doubleValue b )))
+(deftest test-equals
+(are (= _1 _2)
+     false (.equals b (new GMP "4294967297"))
+     true (.equals a a)
+     false (.equals 23 a)))
 
-;; (deftest test-float-value
-;; (are (= _1 _2)
-;;      42949.0 (.floatValue (new GMPInteger "42949"))
-;;      100.0 (.floatValue b )))
+(deftest test-double-value
+(are (= _1 _2)
+     42949.0 (.doubleValue (new GMP "42949"))
+     100.0 (.doubleValue b )))
 
-;; (deftest test-abs
-;; (are (= _1 _2)
-;;      (new GMPInteger "23") (.abs a)
-;;      (new GMPInteger "231") (.abs (new GMPInteger "-231"))))
+(deftest test-float-value
+(are (= _1 _2)
+     42949.0 (.floatValue (new GMP "42949"))
+     100.0 (.floatValue b )))
 
-;; (deftest test-negate
-;; (are (= _1 _2)
-;;      (new GMPInteger "-23") (.negate a)
-;;      (new GMPInteger "231") (.negate (new GMPInteger "-231"))))
+(deftest test-abs
+  (.abs a res)
+  (is (= 23 res))
+  
+  (.abs (new GMP -231) res)
+  (is (= 231 res))
+)
 
-;; (deftest test-to-bit-length
-;; (are (= _1 _2)
-;;      5 (.bitLength a)
-;;      8 (.bitLength (new GMPInteger "-129"))))
+(deftest test-negate
+  (.negate a res)
+  (is (= -23 res))
+  
+  (.negate (new GMP -231) res)
+  (is (= 231 res))
+)
 
-;; (deftest test-to-byte-array
-;; (def c (new BigInteger "23"))
-;; (def d (new BigInteger "100"))
-;; (are (= _1 _2)
-;;      (first (.toByteArray a)) (first (.toByteArray c)) 
-;;      (rest (.toByteArray d)) (rest(.toByteArray b))))
+(deftest test-to-bit-length
+(are (= _1 _2)
+     5 (.bitLength a)
+     8 (.bitLength (new GMP "-129")))
+)
+
+(deftest test-to-byte-array
+  (def c (new BigInteger "23"))
+  (def d (new BigInteger "100"))
+  (def r (make-array Byte/TYPE 1))
+  (.toByteArray a r)
+  (are (= _1 _2)
+       (last r) (first (.toByteArray c)))
+)
 
 ;; (deftest test-and
 ;; (are (= _1 _2)
