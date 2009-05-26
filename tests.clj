@@ -9,13 +9,6 @@
 (def b (new GMP "100"))
 (def res (new GMP))
 
-;; (deftest test-constructor3
-;; (def bytes (.toByteArray a))
-;; (def c (new GMPInteger 1 bytes))
-;; (are (= _1 _2)
-;;      0 (.compareTo c (new GMPInteger "23"))
-;;      0 (.compareTo b (new GMPInteger 1 (.toByteArray b)))))
-
 (deftest test-plus
      (.add a b res) 
      (is (= res (new GMP "123")))
