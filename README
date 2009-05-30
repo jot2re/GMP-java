@@ -12,8 +12,8 @@ Building
 --------
 
 You'll need a recent JVM, the GMP library and its sources to build
-this module. To build it, simply type `make jar`. When the sources finish
-building, you should have a jar file called `GMPInteger.jar` that you
+this module. To build it, simply type `make`. When the sources finish
+building, you should have a jar file called `GMP.jar` that you
 can use in your Java application now. 
 
 Using

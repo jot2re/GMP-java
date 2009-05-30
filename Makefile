@@ -3,6 +3,8 @@ LIBS := -L /usr/lib -lgmp -L. -ljcl
 CFLAGS := -Wall -shared -static -Wl,-rpath,`pwd`
 JAVA_FLAGS := -Xlint
 
+all: jar
+
 java: jni *.java libgmpjava jni
 	javac $(JAVA_FLAGS) *.java	
 
@@ -17,7 +19,7 @@ libjcl:jcl.c
 	gcc  $(Includes) -L /usr/lib/  jcl.c -o libjcl.so $(CFLAGS)
 
 jar: java
-	jar cvf GMP.jar *.class
+	jar cvf GMP.jar GMP.class Pointer*.class 
 
 clean: 
 	rm -rf *.class *.so *~ *.jar
