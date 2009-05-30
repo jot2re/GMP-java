@@ -106,11 +106,11 @@
   (is (= 100 res))
 )
 
-;; (deftest test-is-probable-prime
-;; (are (= _1 _2)
-;;      true (.isProbablePrime a 25)
-;;      false (.isProbablePrime b 25 ) 
-;;      true (.isProbablePrime (new GMPInteger "1166727135273561043807935164711") 25 ))) 
+(deftest test-test-primality
+  (is (= 0 (.testPrimality (GMP. 25) 22)))
+  (is (< 0 (.testPrimality a 22)))
+  (is (< 0 (.testPrimality (GMP. "1166727135273561043807935164711") 22)))
+) 
 
 ;; (deftest test-compare-to
 ;; (are (= _1 _2)
@@ -199,73 +199,85 @@
        (last r) (first (.toByteArray c)))
 )
 
-;; (deftest test-and
-;; (are (= _1 _2)
-;;      (new GMPInteger "0") (.and a (new GMPInteger "0")) 
-;;      (new GMPInteger "100") (.and b b)))
+(deftest test-and
+  (.and a (new GMP "0") res)
+  (is (= 0 res))
+  
+  (.and b b res)
+  (is (= 100 res))
+)
 
-;; (deftest test-or
-;; (are (= _1 _2)
-;;      (new GMPInteger "23") (.or a (new GMPInteger "0")) 
-;;      (new GMPInteger "119") (.or a b)))
+(deftest test-or
+  (.or a (new GMP "0") res)
+  (is (= 23 res))
+  
+  (.or a b res)
+  (is (= 119 res))
+)
 
-;; (deftest test-xor
-;; (are (= _1 _2)
-;;      (new GMPInteger "23") (.xor a (new GMPInteger "0")) 
-;;      (new GMPInteger "115") (.xor a b)))
+(deftest test-xor
+  (.xor a (new GMP "0") res)
+  (is (= 23 res))
+  
+  (.xor a b res)
+  (is (= 115 res))
+)
 
-;; (deftest test-not
-;; (are (= _1 _2)
-;;      (new GMPInteger "-24") (.not a ) 
-;;      (new GMPInteger "-101") (.not b)))
+(deftest test-not
+  (.not a  res)
+  (is (= -24 res))
+  
+  (.not b res)
+  (is (= -101 res))
+)
 
-;; (deftest test-and-not
-;; (are (= _1 _2)
-;;      (new GMPInteger "19") (.andNot a b) 
-;;      (new GMPInteger "96") (.andNot b a)))
+(deftest test-and-not
+  (.andNot a b res)
+  (is (= 19 res))
+  
+  (.andNot b a res)
+  (is (= 96 res))
+)
 
-;; (deftest test-and-not
-;; (are (= _1 _2)
-;;      (new GMPInteger "19") (.andNot a b) 
-;;      (new GMPInteger "96") (.andNot b a)))
+(deftest test-set-bit
+   ; "1100100"
+  (.setBit b 2 true res)
+  (is (= 100 res))
+  
+  (.setBit b 0 true res)
+  (is (= 101 res))
+)
 
-;; (deftest test-clear-bit
-;; (are (= _1 _2)
-;;      ; "1100100"
-;;      (new GMPInteger "96") (.clearBit b 2) 
-;;      (new GMPInteger "100") (.clearBit b 1)))
+(deftest test-test-bit
+     ; "1100100"
 
-;; (deftest test-set-bit
-;; (are (= _1 _2)
-;;      ; "1100100"
-;;      (new GMPInteger "100") (.setBit b 2) 
-;;      (new GMPInteger "101") (.setBit b 0)))
+  true (.testBit b 2) 
+  false (.testBit b 0)
+)
 
-;; (deftest test-test-bit
-;; (are (= _1 _2)
-;;      ; "1100100"
-;;      true (.testBit b 2) 
-;;      false (.testBit b 0)))
+(deftest test-flip-bit
+     ; "1100100"
+  (.flipBit b 2 res)
+  (is (= 96 res))
 
-;; (deftest test-flip-bit
-;; (are (= _1 _2)
-;;      ; "1100100"
-;;      (new GMPInteger "96") (.flipBit b 2) 
-;;      (new GMPInteger "116") (.flipBit b 4)))
+  (.flipBit b 4 res)
+  (is (= 116 res)) 
+)
 
-;; (deftest test-get-lowest-set-bit
-;; (are (= _1 _2)
-;;      ; "1100100"
-;;      7 (.getLowestSetBit (new GMPInteger "128") )
-;;      0 (.getLowestSetBit (new GMPInteger "129"))))
+(deftest test-get-lowest-set-bit
+     ; "1100100"
+  (is (= 7 (.lowestSetBit (new GMP "128"))))
+  (is (= 0 (.lowestSetBit (new GMP "129"))))
+)
 
-;; (deftest test-bit-count
-;; (are (= _1 _2)
-;;      ; "1100100"
-;;      1 (.bitCount (new GMPInteger "128") )
-;;      7 (.bitCount (new GMPInteger "-127"))))
+(deftest test-bit-count
+     ; "1100100"
+  (is (= 1 (.bitCount (new GMP "128"))))
+  (is (= 7 (.bitCount (new GMP -127))))
+)
 
 ;; (deftest test-hashcode )
 
 ;; run the tests
 (run-tests 'GMP.tests)
+  

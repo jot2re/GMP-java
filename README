@@ -32,9 +32,9 @@ Example usage  in Jython:
 >>> a = G("23")
 >>> a
 23
->>> a.add(a,a)
+>>> a.add(a,a) ; a
 46
->>> a.negate(a)
+>>> a.negate(a) ; a 
 -23
 >>> a.multiply(G("10002323"),a)
 230053429
