@@ -6,7 +6,7 @@ JAVA_FLAGS := -Xlint
 all: jar
 
 java: jni *.java libgmpjava jni
-	javac $(JAVA_FLAGS) *.java	
+	javac $(JAVA_FLAGS) GMP.java Pointer32.java Pointer64.java	
 
 jni:GMP.java
 	javac $(JAVA_FLAGS) GMP.java
