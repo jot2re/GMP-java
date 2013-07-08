@@ -95,7 +95,7 @@ static jfieldID native_ptr;
  *    field and acquire the native value associated with that Pointer instance.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natInitializeLibrary(JNIEnv *env,
+Java_org_dfdeshom_math_GMP_natInitializeLibrary(JNIEnv *env,
                                                                jclass nativeMPI)
 {
 
@@ -112,7 +112,7 @@ Java_GMP_natInitializeLibrary(JNIEnv *env,
  * @param this  an instance of NativeMPI.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natInitialize(JNIEnv *env, jobject this)
+Java_org_dfdeshom_math_GMP_natInitialize(JNIEnv *env, jobject this)
 {
   mpz_ptr _this; 
 
@@ -133,7 +133,7 @@ Java_GMP_natInitialize(JNIEnv *env, jobject this)
  *@param this  an instance of NativeMPI.
 */
 JNIEXPORT void JNICALL
-Java_GMP_natFinalize(JNIEnv *env, jobject this)
+Java_org_dfdeshom_math_GMP_natFinalize(JNIEnv *env, jobject this)
 {
 
   mpz_ptr _this;
@@ -159,7 +159,7 @@ Java_GMP_natFinalize(JNIEnv *env, jobject this)
  *@param n  a Java long primitive value.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natFromLong(JNIEnv *env, jobject this,
+Java_org_dfdeshom_math_GMP_natFromLong(JNIEnv *env, jobject this,
                                                      jlong n)
 {
 
@@ -202,7 +202,7 @@ Java_GMP_natFromLong(JNIEnv *env, jobject this,
  *@param x  an instance of a NativeMPI's Pointer.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natFromBI(JNIEnv *env, jobject this,
+Java_org_dfdeshom_math_GMP_natFromBI(JNIEnv *env, jobject this,
                                                    jobject x)
 {
 
@@ -226,7 +226,7 @@ Java_GMP_natFromBI(JNIEnv *env, jobject this,
  *           complement of the signed value to assign to this.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natFromByteArray(JNIEnv *env,
+Java_org_dfdeshom_math_GMP_natFromByteArray(JNIEnv *env,
                                                           jobject this,
                                                           jbyteArray v)
 {
@@ -276,7 +276,7 @@ ensures that the contract described in the RI's documentation is respected;
 e.g. no white spaces in the middle, limited valid radix values, etc...
 */
 JNIEXPORT jint JNICALL
-Java_GMP_natFromString(JNIEnv *env,
+Java_org_dfdeshom_math_GMP_natFromString(JNIEnv *env,
                                                        jobject this, jstring s,
                                                        jint rdx)
 {
@@ -307,7 +307,7 @@ Java_GMP_natFromString(JNIEnv *env,
  *           be positive.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natFromSignedMagnitude(JNIEnv *env,
+Java_org_dfdeshom_math_GMP_natFromSignedMagnitude(JNIEnv *env,
                                                                 jobject this,
                                                                 jbyteArray m,
                                                                 jboolean isnegative)
@@ -341,7 +341,7 @@ Java_GMP_natFromSignedMagnitude(JNIEnv *env,
  * @return  the Java string representing the value of this in base n.
  */
 JNIEXPORT jstring JNICALL
-Java_GMP_natToString(JNIEnv *env, jobject this,
+Java_org_dfdeshom_math_GMP_natToString(JNIEnv *env, jobject this,
                                                      jint n)
 {
 
@@ -367,7 +367,7 @@ Java_GMP_natToString(JNIEnv *env, jobject this,
  *           this.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natToByteArray(JNIEnv *env,
+Java_org_dfdeshom_math_GMP_natToByteArray(JNIEnv *env,
                                                         jobject this,
                                                         jbyteArray r)
 {
@@ -421,7 +421,7 @@ Java_GMP_natToByteArray(JNIEnv *env,
  *          as well.
  */
 JNIEXPORT jint JNICALL
-Java_GMP_natAbsIntValue(JNIEnv *env,
+Java_org_dfdeshom_math_GMP_natAbsIntValue(JNIEnv *env,
                                                         jobject this)
 {
 
@@ -439,7 +439,7 @@ Java_GMP_natAbsIntValue(JNIEnv *env,
  @return  the, eventually truncated, double value of this NativeMPI.
 */
 JNIEXPORT jdouble JNICALL
-Java_GMP_natDoubleValue(JNIEnv *env,
+Java_org_dfdeshom_math_GMP_natDoubleValue(JNIEnv *env,
                                                         jobject this)
 {
 
@@ -458,7 +458,7 @@ Java_GMP_natDoubleValue(JNIEnv *env,
          than y.
 */
 JNIEXPORT jint JNICALL
-Java_GMP_natCompare(JNIEnv *env, jobject this,
+Java_org_dfdeshom_math_GMP_natCompare(JNIEnv *env, jobject this,
                                                     jobject x)
 {
 
@@ -486,7 +486,7 @@ Java_GMP_natCompare(JNIEnv *env, jobject this,
  * @param r  a NativeMPI's Pointer such that r = this + x.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natAdd(JNIEnv *env, jobject this,
+Java_org_dfdeshom_math_GMP_natAdd(JNIEnv *env, jobject this,
                                                 jobject x, jobject r)
 {
 
@@ -508,7 +508,7 @@ Java_GMP_natAdd(JNIEnv *env, jobject this,
 /* output: */
 /* @param r  a NativeMPI's Pointer such that r = this - x. */
 JNIEXPORT void JNICALL
-Java_GMP_natSubtract(JNIEnv *env, jobject this,
+Java_org_dfdeshom_math_GMP_natSubtract(JNIEnv *env, jobject this,
                                                      jobject x, jobject r)
 {
 
@@ -531,7 +531,7 @@ Java_GMP_natSubtract(JNIEnv *env, jobject this,
  * @param r  a NativeMPI's Pointer such that r = this * x.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natMultiply(JNIEnv *env, jobject this,
+Java_org_dfdeshom_math_GMP_natMultiply(JNIEnv *env, jobject this,
                                                      jobject x, jobject r)
 {
 
@@ -553,7 +553,7 @@ Java_GMP_natMultiply(JNIEnv *env, jobject this,
  * @param r  a NativeMPI's Pointer such that r = this div x.
 */
 JNIEXPORT void JNICALL
-Java_GMP_natQuotient(JNIEnv *env, jobject this,
+Java_org_dfdeshom_math_GMP_natQuotient(JNIEnv *env, jobject this,
                                                      jobject x, jobject r)
 {
 
@@ -576,7 +576,7 @@ Java_GMP_natQuotient(JNIEnv *env, jobject this,
  * @param r  a NativeMPI's Pointer such that r = this mod x.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natRemainder(JNIEnv *env, jobject this,
+Java_org_dfdeshom_math_GMP_natRemainder(JNIEnv *env, jobject this,
                                                       jobject x, jobject r)
 {
 
@@ -601,7 +601,7 @@ Java_GMP_natRemainder(JNIEnv *env, jobject this,
  * @param r  a NativeMPI's Pointer such that r = this mod x.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natQuotientAndRemainder(JNIEnv *env,
+Java_org_dfdeshom_math_GMP_natQuotientAndRemainder(JNIEnv *env,
                                                                  jobject this,
                                                                  jobject x,
                                                                  jobject q,
@@ -629,7 +629,7 @@ Java_GMP_natQuotientAndRemainder(JNIEnv *env,
  * @param r  a NativeMPI's Pointer such that r = this mod x.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natModulo(JNIEnv *env, jobject this,
+Java_org_dfdeshom_math_GMP_natModulo(JNIEnv *env, jobject this,
                                                    jobject x, jobject r)
 {
 
@@ -653,7 +653,7 @@ Java_GMP_natModulo(JNIEnv *env, jobject this,
  * @param r  a NativeMPI's Pointer such that r = this ** n.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natPow(JNIEnv *env, jobject this,
+Java_org_dfdeshom_math_GMP_natPow(JNIEnv *env, jobject this,
                                                 jint n, jobject r)
 {
 
@@ -680,7 +680,7 @@ Java_GMP_natPow(JNIEnv *env, jobject this,
  *         has no multiplicative inverse.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natModPow(JNIEnv *env, jobject this,
+Java_org_dfdeshom_math_GMP_natModPow(JNIEnv *env, jobject this,
                                                    jobject e, jobject m,
                                                    jobject r)
 {
@@ -737,7 +737,7 @@ Java_GMP_natModPow(JNIEnv *env, jobject this,
  *         multiplicative inverse.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natModInverse(JNIEnv *env,
+Java_org_dfdeshom_math_GMP_natModInverse(JNIEnv *env,
                                                        jobject this,
                                                        jobject m, jobject r)
 {
@@ -773,7 +773,7 @@ Java_GMP_natModInverse(JNIEnv *env,
  * @param r  a NativeMPI's Pointer such that r is the GCD of this and x.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natGCD(JNIEnv *env, jobject this,
+Java_org_dfdeshom_math_GMP_natGCD(JNIEnv *env, jobject this,
                                                 jobject x, jobject r)
 {
 
@@ -797,7 +797,7 @@ Java_GMP_natGCD(JNIEnv *env, jobject this,
  *          composite.
  */
 JNIEXPORT jint JNICALL
-Java_GMP_natTestPrimality(JNIEnv *env,
+Java_org_dfdeshom_math_GMP_natTestPrimality(JNIEnv *env,
                                                           jobject this, jint n)
 {
 
@@ -818,7 +818,7 @@ Java_GMP_natTestPrimality(JNIEnv *env,
  * @param r  a NativeMPI's Pointer such that r = this * 2**n.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natShiftLeft(JNIEnv *env, jobject this,
+Java_org_dfdeshom_math_GMP_natShiftLeft(JNIEnv *env, jobject this,
                                                       jint n, jobject r)
 {
 
@@ -840,7 +840,7 @@ Java_GMP_natShiftLeft(JNIEnv *env, jobject this,
  * @param r  a NativeMPI's Pointer such that r = floor(this / 2**n).
  */
 JNIEXPORT void JNICALL
-Java_GMP_natShiftRight(JNIEnv *env,
+Java_org_dfdeshom_math_GMP_natShiftRight(JNIEnv *env,
                                                        jobject this, jint n,
                                                        jobject r)
 {
@@ -860,7 +860,7 @@ Java_GMP_natShiftRight(JNIEnv *env,
  * @return  the 0-based index of the lowest significant bit set (to 1) in this.
  */
 JNIEXPORT jint JNICALL
-Java_GMP_natLowestSetBit(JNIEnv *env,
+Java_org_dfdeshom_math_GMP_natLowestSetBit(JNIEnv *env,
                                                          jobject this)
 {
 
@@ -879,7 +879,7 @@ Java_GMP_natLowestSetBit(JNIEnv *env,
  * @param r  a NativeMPI's Pointer such that r = abs(x).
  */
 JNIEXPORT void JNICALL
-Java_GMP_natAbs(JNIEnv *env, jobject this,
+Java_org_dfdeshom_math_GMP_natAbs(JNIEnv *env, jobject this,
                                                 jobject r)
 {
 
@@ -900,7 +900,7 @@ Java_GMP_natAbs(JNIEnv *env, jobject this,
  * @param r  a NativeMPI's Pointer such that r = -x.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natNegate(JNIEnv *env, jobject this,
+Java_org_dfdeshom_math_GMP_natNegate(JNIEnv *env, jobject this,
                                                    jobject r)
 {
 
@@ -919,7 +919,7 @@ Java_GMP_natNegate(JNIEnv *env, jobject this,
  * @return  the number of bits needed to represent this.
  */
 JNIEXPORT jint JNICALL
-Java_GMP_natBitLength(JNIEnv *env, jobject this)
+Java_org_dfdeshom_math_GMP_natBitLength(JNIEnv *env, jobject this)
 {
 
   mpz_srcptr _this;
@@ -936,7 +936,7 @@ Java_GMP_natBitLength(JNIEnv *env, jobject this)
  * @return  the number of bits set (to 1) in this.
  */
 JNIEXPORT jint JNICALL
-Java_GMP_natSetBitCount(JNIEnv *env,
+Java_org_dfdeshom_math_GMP_natSetBitCount(JNIEnv *env,
                                                         jobject this)
 {
 
@@ -979,7 +979,7 @@ Java_GMP_natSetBitCount(JNIEnv *env,
  * @param r  a NativeMPI's Pointer such that r = this ^ x.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natXor(JNIEnv *env, jobject this,
+Java_org_dfdeshom_math_GMP_natXor(JNIEnv *env, jobject this,
                                                 jobject x, jobject r)
 {
 
@@ -1002,7 +1002,7 @@ Java_GMP_natXor(JNIEnv *env, jobject this,
  * @param r  a NativeMPI's Pointer such that r = this | x.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natOr(JNIEnv *env, jobject this,
+Java_org_dfdeshom_math_GMP_natOr(JNIEnv *env, jobject this,
                                                jobject x, jobject r)
 {
 
@@ -1025,7 +1025,7 @@ Java_GMP_natOr(JNIEnv *env, jobject this,
  * @param r  a NativeMPI's Pointer such that r = this & x.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natAnd(JNIEnv *env, jobject this,
+Java_org_dfdeshom_math_GMP_natAnd(JNIEnv *env, jobject this,
                                                 jobject x, jobject r)
 {
 
@@ -1048,7 +1048,7 @@ Java_GMP_natAnd(JNIEnv *env, jobject this,
  * @param r  a NativeMPI's Pointer such that r = this & ~x.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natAndNot(JNIEnv *env, jobject this,
+Java_org_dfdeshom_math_GMP_natAndNot(JNIEnv *env, jobject this,
                                                    jobject x, jobject r)
 {
 
@@ -1073,7 +1073,7 @@ Java_GMP_natAndNot(JNIEnv *env, jobject this,
  * @param r  a copy of this NativeMPI's Pointer with its n-th bit flipped.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natFlipBit(JNIEnv *env, jobject this,
+Java_org_dfdeshom_math_GMP_natFlipBit(JNIEnv *env, jobject this,
                                                     jint n, jobject r)
 {
 
@@ -1105,7 +1105,7 @@ Java_GMP_natFlipBit(JNIEnv *env, jobject this,
  *          respectively.
  */
 JNIEXPORT jint JNICALL
-Java_GMP_natTestBit(JNIEnv *env, jobject this,
+Java_org_dfdeshom_math_GMP_natTestBit(JNIEnv *env, jobject this,
                                                     jint n)
 {
 
@@ -1130,7 +1130,7 @@ Java_GMP_natTestBit(JNIEnv *env, jobject this,
  *           as requested.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natSetBit(JNIEnv *env, jobject this,
+Java_org_dfdeshom_math_GMP_natSetBit(JNIEnv *env, jobject this,
                                                    jint n, jboolean setIt,
                                                    jobject r)
 {
@@ -1159,7 +1159,7 @@ Java_GMP_natSetBit(JNIEnv *env, jobject this,
  * @param r  a NativeMPI's Pointer such that r = ~this.
  */
 JNIEXPORT void JNICALL
-Java_GMP_natNot(JNIEnv *env, jobject this,
+Java_org_dfdeshom_math_GMP_natNot(JNIEnv *env, jobject this,
                                                 jobject r)
 {
 

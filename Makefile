@@ -22,4 +22,5 @@ jar: java
 	jar cvf target/GMP.jar org/dfdeshom/math/GMP.class org/dfdeshom/math/Pointer*.class 
 
 clean: 
-	rm -rf org/dfdeshom/math/*.class org/dfdeshom/math/*.so *~ *.jar
+	rm -rf org/dfdeshom/math/*.class *.so *~ target/*.jar include
+	rm -rf org/dfdeshom/math/*.class
