@@ -42,6 +42,7 @@ exception statement from your version. */
 /** A type used to indicate special data used by native code that should not 
     be marked by the garbage collector. */
 
+
 public abstract class Pointer
 {
 }

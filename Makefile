@@ -1,6 +1,6 @@
 Includes := -I /usr/include -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
 LIBS := -L /usr/lib -lgmp -L. -ljcl
-CFLAGS := -Wall -shared -static -Wl,-rpath,`pwd`
+CFLAGS := -Wall -shared -fPIC -Wl,-rpath,`pwd`
 JAVA_FLAGS := -Xlint
 
 all: jar

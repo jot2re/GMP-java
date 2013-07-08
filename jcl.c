@@ -251,7 +251,7 @@ JCL_NewRawDataObject (JNIEnv * env, void *data)
       return NULL;
     }
 
-  if (SIZEOF_VOID_P == 8) {
+  if (SIZEOF_VOID_P() == 8) {
     return (*env)->NewObject (env, rawDataClass, rawData_mid, (jlong) data);
   }
   else{
@@ -269,7 +269,7 @@ JCL_GetRawData (JNIEnv * env, jobject rawdata)
       return NULL;
     }
 
-  if (SIZEOF_VOID_P == 8)
+  if (SIZEOF_VOID_P() == 8)
     {
       return (void *) (*env)->GetLongField (env, rawdata, rawData_fid);
     }

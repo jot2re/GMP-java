@@ -39,6 +39,10 @@ exception statement from your version. */
 /**
  * Implement BigInteger using GMP
  */
+//package org.dfd.PP;
+
+//import Pointer.*;
+
 public final class GMP extends Number implements Comparable<GMP>
 {
   private Pointer native_ptr;
@@ -47,8 +51,9 @@ public final class GMP extends Number implements Comparable<GMP>
 
   static
   {
-       System.loadLibrary("nativegmp");
-       natInitializeLibrary();
+      //System.setProperty( "java.library.path", "~/code/gmp-java" );
+      System.loadLibrary("nativegmp");
+      natInitializeLibrary();
   }
 
   public static final GMP ZERO = new GMP(0);
