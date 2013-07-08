@@ -41,7 +41,7 @@ exception statement from your version. */
 #include <stdlib.h>
 
 
-#include "GMP.h"
+#include "include/org_dfdeshom_math_GMP.h"
 #include "jcl.h"
 
 #include <gmp.h>

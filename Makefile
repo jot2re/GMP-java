@@ -1,16 +1,16 @@
-Includes := -I /usr/include -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
+Includes := -I /usr/include -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I include
 LIBS := -L /usr/lib -lgmp -L. -ljcl
 CFLAGS := -Wall -shared -fPIC -Wl,-rpath,`pwd`
 JAVA_FLAGS := -Xlint
 
 all: jar
 
-java: jni *.java libgmpjava jni
-	javac $(JAVA_FLAGS) GMP.java Pointer32.java Pointer64.java	
+java: jni org/dfdeshom/math/*.java libgmpjava jni
+	javac $(JAVA_FLAGS) org/dfdeshom/math/GMP.java org/dfdeshom/math/Pointer32.java org/dfdeshom/math/Pointer64.java	
 
-jni:GMP.java
-	javac $(JAVA_FLAGS) GMP.java
-	javah -jni GMP	
+jni:
+	javac $(JAVA_FLAGS) org/dfdeshom/math/GMP.java
+	javah -d include org.dfdeshom.math.GMP
 
 libgmpjava:GMP.c libjcl
 	gcc $(Includes) GMP.c -o libnativegmp.so $(LIBS) $(CFLAGS)
@@ -18,8 +18,8 @@ libgmpjava:GMP.c libjcl
 libjcl:jcl.c
 	gcc  $(Includes) -L /usr/lib/  jcl.c -o libjcl.so $(CFLAGS)
 
-jar: java
-	jar cvf GMP.jar GMP.class Pointer*.class 
+jar: java 
+	jar cvf target/GMP.jar org/dfdeshom/math/GMP.class org/dfdeshom/math/Pointer*.class 
 
 clean: 
-	rm -rf *.class *.so *~ *.jar
+	rm -rf org/dfdeshom/math/*.class org/dfdeshom/math/*.so *~ *.jar
