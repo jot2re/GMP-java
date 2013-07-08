@@ -10,6 +10,7 @@ deshommes<dfdeshom@gmail.com> and released under the GPL 2 or later.
 
 Building 
 --------
+Make sure JAVA_HOME is set in your environment
 
 You'll need a recent JVM, the GMP library and its sources to build
 this module. To build it, simply type `make`. When the sources finish
