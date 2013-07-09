@@ -10,7 +10,7 @@ deshommes<dfdeshom@gmail.com> and released under the GPL 2 or later.
 
 Building 
 --------
-Make sure JAVA_HOME is set in your environment
+Make sure JAVA_HOME is set in your environment.
 
 You'll need a recent JVM, the GMP library and its sources to build
 this module. To build it, simply type `make`. When the sources finish
@@ -19,30 +19,17 @@ can use in your Java application now.
 
 Using
 -----
-You'll need to add `GMP.jar` to you classpath. The main exposed
-class is `GMP`. This library follows the same conventions as GMP for
+You'll need to add `GMP.jar` to you classpath. You will also need to add
+ the generated `lib` directory to your `java.library.path`. Example:
+
+     $ javac -cp target/*.jar Program.java
+     $ java  -Djava.library.path=lib Program  
+
+The main exposed class is `GMP`. This library follows the same conventions as GMP for
 usage for efficiency reasons. In particular, all methods return
 `void` and `GMP` objects are modified IN-PLACE. In general, inputs go
 first in methods. Example:
 
     abs(GMP input, GMP result)
 
-Example usage  in Jython:   
-
->>> import GMP as G
->>> a = G("23")
->>> a
-23
->>> a.add(a,a) ; a
-46
->>> a.negate(a) ; a 
--23
->>> a.multiply(G("10002323"),a)
-230053429
-
-TODO
-----
- * Finish writing unit tests
- * More docs
- * Performance numbers
-
+An example of using this library in java can be found in `example.java`
