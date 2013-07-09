@@ -23,7 +23,7 @@ You'll need to add `GMP.jar` to you classpath. You will also need to add
  the generated `lib` directory to your `java.library.path`. Example:
 
      $ javac -cp target/*.jar Program.java
-     $ java  -Djava.library.path=lib Program  
+     $ java  -Djava.library.path=gmp-java/ -cp gmp-java/ Program
 
 The main exposed class is `GMP`. This library follows the same conventions as GMP for
 usage for efficiency reasons. In particular, all methods return

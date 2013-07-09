@@ -13,12 +13,11 @@ jni:
 	javah -jni -d include org.dfdeshom.math.GMP 
 
 libgmpjava:GMP.c libjcl
-	mkdir -p lib/
-	gcc $(Includes)  GMP.c -o lib/libnativegmp.so $(LIBS) $(CFLAGS)
+	gcc $(Includes)  GMP.c -o libnativegmp.so $(LIBS) $(CFLAGS)
+
 
 libjcl:jcl.c
-	mkdir -p lib
-	gcc  $(Includes)  -L /usr/lib/   jcl.c -o lib/libjcl.so $(CFLAGS)
+	gcc  $(Includes)  -L /usr/lib/ jcl.c -o libjcl.so $(CFLAGS)
 
 jar: java
 	mkdir -p target 
@@ -30,4 +29,4 @@ clean:
 
 example: jar
 	javac -cp target/*.jar example.java
-	java  -Djava.library.path=lib   example
+	java  -Djava.library.path=.   example
