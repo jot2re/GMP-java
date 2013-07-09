@@ -32,4 +32,4 @@ first in methods. Example:
 
     abs(GMP input, GMP result)
 
-An example of using this library in java can be found in `example.java`
+An example of using this library in java can be found in `example.java` which can be run using `make example`
