@@ -102,7 +102,7 @@ Java_org_dfdeshom_math_GMP_natInitializeLibrary(JNIEnv *env,
   TRACE("Loading GMP-based BigInteger native library");
   mp_set_memory_functions (NULL, NULL, NULL);
   native_ptr = (*env)->GetFieldID (env, nativeMPI, "native_ptr",
-                                   "LPointer;");
+                                   "Lorg/dfdeshom/math/Pointer;");
   TRACE("Loaded GMP-based BigInteger native library");
 }
 

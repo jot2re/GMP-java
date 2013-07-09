@@ -10,13 +10,13 @@ java: jni org/dfdeshom/math/*.java libgmpjava jni
 
 jni:
 	javac $(JAVA_FLAGS) org/dfdeshom/math/GMP.java
-	javah -d include org.dfdeshom.math.GMP
+	javah -jni -d include org.dfdeshom.math.GMP 
 
 libgmpjava:GMP.c libjcl
-	gcc $(Includes) GMP.c -o libnativegmp.so $(LIBS) $(CFLAGS)
+	gcc $(Includes)  GMP.c -o libnativegmp.so $(LIBS) $(CFLAGS)
 
 libjcl:jcl.c
-	gcc  $(Includes) -L /usr/lib/  jcl.c -o libjcl.so $(CFLAGS)
+	gcc  $(Includes)  -L /usr/lib/   jcl.c -o libjcl.so $(CFLAGS)
 
 jar: java 
 	jar cvf target/GMP.jar org/dfdeshom/math/GMP.class org/dfdeshom/math/Pointer*.class 

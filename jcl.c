@@ -69,7 +69,7 @@ JNI_OnLoad (JavaVM *vm, void *reserved __attribute__((unused)))
   env = (JNIEnv *) envp;
   if (SIZEOF_VOID_P() == 8)
     {
-  rawDataClass = (*env)->FindClass (env, "Pointer64");
+  rawDataClass = (*env)->FindClass (env, "org/dfdeshom/math/Pointer64");
   if (rawDataClass != NULL)
     rawDataClass = (*env)->NewGlobalRef (env, rawDataClass);
 
@@ -82,7 +82,7 @@ JNI_OnLoad (JavaVM *vm, void *reserved __attribute__((unused)))
 
   if (SIZEOF_VOID_P() == 4)
     {
-  rawDataClass = (*env)->FindClass (env, "Pointer32");
+  rawDataClass = (*env)->FindClass (env, "org/dfdeshom/math/Pointer32");
   if (rawDataClass != NULL)
     rawDataClass = (*env)->NewGlobalRef (env, rawDataClass);
 

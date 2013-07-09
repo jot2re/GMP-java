@@ -40,6 +40,7 @@ exception statement from your version. */
  * Implement BigInteger using GMP
  */
 package org.dfdeshom.math;
+import org.dfdeshom.math.Pointer;
 
 public final class GMP extends Number implements Comparable<GMP>
 {
@@ -49,11 +50,11 @@ public final class GMP extends Number implements Comparable<GMP>
 
   static
   {
-      //System.setProperty( "java.library.path", "~/code/gmp-java" );
       System.loadLibrary("nativegmp");
       natInitializeLibrary();
   }
 
+  
   public static final GMP ZERO = new GMP(0);
 
   public GMP()
@@ -539,5 +540,6 @@ public final class GMP extends Number implements Comparable<GMP>
   private native int natTestBit(int n);
   private native void natSetBit(int n, boolean setIt, Pointer r);
   private native void natNot(Pointer r);
+
 
 }
