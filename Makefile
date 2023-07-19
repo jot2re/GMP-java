@@ -1,4 +1,4 @@
-Includes := -I /usr/include -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I include -I /usr/lib/jvm/java-19-openjdk/include/ -I /usr/lib/jvm/java-19-openjdk/include/linux/
+Includes := -I /usr/include -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I include -I /usr/lib/jvm/java-19-openjdk-amd64/include -I /usr/lib/jvm/java-19-openjdk-amd64/include/linux/
 LIBS := -L /usr/lib -lgmp -L. -ljcl
 CFLAGS := -Wall -shared -fPIC -Wl,-rpath,`pwd`
 JAVA_FLAGS := -Xlint
